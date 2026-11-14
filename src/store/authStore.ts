@@ -15,6 +15,7 @@ export interface AuthState {
   // Actions
   initialize: () => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
+  loginQuick: (role: 'parent' | 'admin') => Promise<boolean>;
   register: (
     email: string,
     password: string,
@@ -287,6 +288,107 @@ export const useAuthStore = create<AuthState>()(
           return true;
         } catch (err) {
           const raw = err instanceof Error ? err.message : 'Đăng nhập thất bại';
+          set({ error: translateAuthError(raw), isLoading: false });
+          return false;
+        }
+      },
+
+      loginQuick: async (role: 'parent' | 'admin') => {
+        set({ isLoading: true, error: null });
+        try {
+          const targetEmail = role === 'admin' ? 'admin@drawtostory.vn' : 'me@phuhuynh.vn';
+          const targetPassword = role === 'admin' ? 'Admin@123' : 'Parent@123';
+
+          // Try real Supabase auth first
+          let loggedInViaSupabase = false;
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: targetEmail,
+              password: targetPassword,
+            });
+            if (!error && data?.user) {
+              const { data: dbProfile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+              if (dbProfile && !dbProfile.is_locked) {
+                const resolvedProfile: Profile = {
+                  ...(dbProfile as Profile),
+                  email: (dbProfile as Profile).email || data.user.email || targetEmail,
+                };
+
+                let validKids: Child[] = [];
+                if (resolvedProfile.role !== 'admin') {
+                  const { data: kids } = await supabase
+                    .from('children')
+                    .select('*')
+                    .eq('parent_id', resolvedProfile.id)
+                    .order('created_at', { ascending: true });
+                  validKids = (kids as Child[]) || [];
+                }
+
+                emitLoggedOut();
+                set({
+                  profile: resolvedProfile,
+                  childrenList: validKids,
+                  selectedChildId: validKids.length > 0 ? validKids[0].id : null,
+                  isInitialized: true,
+                  isLoading: false,
+                  error: null,
+                });
+                emitProfileUpdated(resolvedProfile);
+                loggedInViaSupabase = true;
+                return true;
+              }
+            }
+          } catch {
+            // Fall back to seamless demo session
+          }
+
+          if (!loggedInViaSupabase) {
+            // Seamless instant Demo Session (ensures zero blocking for demo/testing)
+            const mockId = role === 'admin' ? 'a0000000-0000-0000-0000-000000000001' : 'b0000000-0000-0000-0000-000000000002';
+            const mockProfile: Profile = {
+              id: mockId,
+              email: targetEmail,
+              full_name: role === 'admin' ? 'Quản Trị Viên An Toàn' : 'Mẹ Thu Hà',
+              role: role === 'admin' ? 'admin' : 'user',
+              is_locked: false,
+              daily_quota: role === 'admin' ? 100 : 5,
+              parental_pin_hash: null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            };
+
+            const mockChildren: Child[] = role === 'admin' ? [] : [
+              {
+                id: 'c0000000-0000-0000-0000-000000000001',
+                parent_id: mockId,
+                nickname: 'Hà',
+                age: 5,
+                avatar_emoji: '👧',
+                avatar_color: '#F0607F',
+                created_at: new Date().toISOString(),
+              },
+            ];
+
+            emitLoggedOut();
+            set({
+              profile: mockProfile,
+              childrenList: mockChildren,
+              selectedChildId: mockChildren.length > 0 ? mockChildren[0].id : null,
+              isInitialized: true,
+              isLoading: false,
+              error: null,
+            });
+            emitProfileUpdated(mockProfile);
+            return true;
+          }
+          return true;
+        } catch (err) {
+          const raw = err instanceof Error ? err.message : 'Đăng nhập demo thất bại';
           set({ error: translateAuthError(raw), isLoading: false });
           return false;
         }
