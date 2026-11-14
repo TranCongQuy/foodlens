@@ -235,6 +235,8 @@ export const SharedStoryPage: React.FC = () => {
                   <img
                     src={story.drawing.image_path}
                     alt={story.title}
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-contain"
                   />
                 ) : (

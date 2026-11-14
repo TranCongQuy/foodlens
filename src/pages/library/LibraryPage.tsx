@@ -239,10 +239,11 @@ export const LibraryPage: React.FC = () => {
         <div className="relative">
           {/* Responsive Grid 1/2/3/4 cols */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-6">
-            {filteredStories.map((story) => (
+            {filteredStories.map((story, idx) => (
               <div key={story.id} className="relative">
                 <BookCover
                   story={story}
+                  priority={idx < 2}
                   onRead={(id) => navigate(`/story/${id}`)}
                   onDelete={handleDeleteStory}
                   onShare={handleShareStory}

@@ -588,6 +588,7 @@ export const SettingsPage: React.FC = () => {
           <Input
             label="Mật khẩu mới"
             type="password"
+            autoComplete="new-password"
             placeholder="Tối thiểu 6 ký tự"
             value={newAccountPassword}
             onChange={(e) => setNewAccountPassword(e.target.value)}
@@ -596,6 +597,7 @@ export const SettingsPage: React.FC = () => {
           <Input
             label="Nhập lại mật khẩu mới"
             type="password"
+            autoComplete="new-password"
             placeholder="Xác nhận mật khẩu mới"
             value={confirmAccountPassword}
             onChange={(e) => setConfirmAccountPassword(e.target.value)}
@@ -824,6 +826,7 @@ export const SettingsPage: React.FC = () => {
             <Input
               label="Mật khẩu tài khoản hiện tại"
               type="password"
+              autoComplete="current-password"
               placeholder="Nhập mật khẩu để xác thực chính chủ"
               value={deleteAccountPassword}
               onChange={(e) => setDeleteAccountPassword(e.target.value)}

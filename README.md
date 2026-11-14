@@ -24,6 +24,8 @@
 
 ## 📚 HỆ THỐNG TÀI LIỆU DỰ ÁN (DOCUMENTATION INDEX)
 
+- [PRODUCT.md](PRODUCT.md): Định nghĩa tầm nhìn sản phẩm, chân dung người dùng gia đình và các nguyên tắc cốt lõi (chuẩn Impeccable).
+- [DESIGN.md](DESIGN.md): Hệ thống Design System, nguồn sự thật token màu sắc/typography/chiều sâu và bộ tiêu chuẩn chống AI Slop (chuẩn Hallmark & Impeccable).
 - [01-NGHIEP-VU.md](docs/01-NGHIEP-VU.md): Nghiệp vụ sản phẩm, chân dung người dùng, ma trận phân quyền RBAC, luồng tạo truyện Server-Side Edge Functions, hướng dẫn sử dụng tương tác, bộ 10 quy tắc an toàn và 5 huy hiệu Gamification.
 - [02-GIAO-DIEN-AI.md](docs/02-GIAO-DIEN-AI.md): Kiến trúc bảo mật Pipeline AI 3 lớp Gemini 2.5 Flash trên Supabase Edge Functions, chuẩn hóa biệt danh chống lặp từ (`formatChildName`), Prompt Playground thật, kiểm thử trực tiếp mã nguồn thật (`pipelineRules.js`) và bộ tổng hợp âm thanh Web Audio API.
 - [03-KY-THUAT-FRONTEND.md](docs/03-KY-THUAT-FRONTEND.md): Ngôn ngữ thiết kế Modern Storybook, native `<dialog>`, carousel vuốt ngang `UserGuideModal`, phân tách bundle `React.lazy`, chống cắt chữ trang đọc sách và cô lập Kid Mode.

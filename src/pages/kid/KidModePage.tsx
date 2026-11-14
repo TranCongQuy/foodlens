@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { soundEffects } from '@/lib/sound';
+import { useWakeLock } from '@/lib/hooks/useWakeLock';
 
 function generateChallengePair(): [number, number] {
   // Multi-digit × single-digit challenge suitable for adults, preventing young children from guessing
@@ -23,6 +24,9 @@ export const KidModePage: React.FC = () => {
   const navigate = useNavigate();
   const { stories, fetchStories } = useStoryStore();
   const { childrenList, selectedChildId, verifyPin, hasPinConfigured } = useAuthStore();
+
+  // Modern Web API: Keep screen awake during Kid Mode
+  useWakeLock(true);
 
   useEffect(() => {
     fetchStories();
@@ -325,7 +329,11 @@ export const KidModePage: React.FC = () => {
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') handleVerifyGate();
+              const nativeEv = e.nativeEvent as KeyboardEvent;
+              const isIme = nativeEv.isComposing || nativeEv.keyCode === 229;
+              if (e.key === 'Enter' && !isIme) {
+                handleVerifyGate();
+              }
             }}
             error={gateError || undefined}
             autoFocus

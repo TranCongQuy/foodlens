@@ -18,7 +18,6 @@ import {
   Clock,
   DollarSign,
   CheckCircle2,
-  Sparkles,
   TrendingUp,
   Cpu,
   ShieldCheck,
@@ -28,6 +27,20 @@ import { vi } from '@/lib/i18n/vi';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { formatCurrencyUSD } from '@/lib/utils';
+
+// Design Tokens for Recharts (Hallmark & Impeccable Single Source of Truth)
+const CHART_TOKENS = {
+  approvedStroke: '#166E48',
+  approvedFill: '#C9F0DD',
+  rejectedStroke: '#D13A5E',
+  rejectedFill: '#FFE3EA',
+  costStroke: '#6C5CE7',
+  latencyStroke: '#8A5A00',
+  gridStroke: '#FFF3E6',
+  textMuted: '#5E5370',
+  tooltipBg: '#FFFFFF',
+  tooltipBorder: '#FCE8D5',
+};
 
 export const AdminOverviewPage: React.FC = () => {
   const {
@@ -48,11 +61,8 @@ export const AdminOverviewPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Badge variant="magic" size="sm">
-              <Sparkles className="w-3.5 h-3.5 mr-1" />
-              Live AI Metrics
-            </Badge>
-            <span className="text-xs text-ink-soft font-bold">Đồng bộ trực tiếp từ cơ sở dữ liệu</span>
+            <span className="w-2 h-2 rounded-full bg-success inline-block animate-pulse" />
+            <span className="text-xs text-ink-soft font-bold">Dữ liệu thời gian thực Supabase</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-ink mt-1">
             {vi.admin.tabs.overview}
@@ -62,14 +72,14 @@ export const AdminOverviewPage: React.FC = () => {
           </p>
         </div>
 
-        {/* 7d / 30d Range Toggle */}
+        {/* 7d / 30d Range Toggle (Neutral Operate Mode Styling) */}
         <div className="inline-flex items-center gap-1 p-1 rounded-full bg-surface border border-ink/10 shadow-xs self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setTimeRange('7d')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-heading font-bold transition-all cursor-pointer min-h-[36px] ${
               timeRange === '7d'
-                ? 'bg-brand-600 text-white shadow-btn-primary'
+                ? 'bg-ink text-white shadow-xs'
                 : 'text-ink-soft hover:text-ink'
             }`}
           >
@@ -80,7 +90,7 @@ export const AdminOverviewPage: React.FC = () => {
             onClick={() => setTimeRange('30d')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-heading font-bold transition-all cursor-pointer min-h-[36px] ${
               timeRange === '30d'
-                ? 'bg-brand-600 text-white shadow-btn-primary'
+                ? 'bg-ink text-white shadow-xs'
                 : 'text-ink-soft hover:text-ink'
             }`}
           >
@@ -191,27 +201,27 @@ export const AdminOverviewPage: React.FC = () => {
               <AreaChart data={activeChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorApproved" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C9F0DD" stopOpacity={0.85} />
-                    <stop offset="95%" stopColor="#C9F0DD" stopOpacity={0} />
+                    <stop offset="5%" stopColor={CHART_TOKENS.approvedFill} stopOpacity={0.85} />
+                    <stop offset="95%" stopColor={CHART_TOKENS.approvedFill} stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorRejected" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FFE3EA" stopOpacity={0.85} />
-                    <stop offset="95%" stopColor="#FFE3EA" stopOpacity={0} />
+                    <stop offset="5%" stopColor={CHART_TOKENS.rejectedFill} stopOpacity={0.85} />
+                    <stop offset="95%" stopColor={CHART_TOKENS.rejectedFill} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#FFF3E6" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#5E5370' }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#5E5370' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_TOKENS.gridStroke} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: CHART_TOKENS.tooltipBg,
                     borderRadius: '1rem',
-                    border: '1px solid #FFE3EA',
+                    border: `1px solid ${CHART_TOKENS.rejectedFill}`,
                     fontSize: '12px',
                   }}
                 />
-                <Area type="monotone" dataKey="approved" name="Đã duyệt" stroke="#166E48" fillOpacity={1} fill="url(#colorApproved)" />
-                <Area type="monotone" dataKey="rejected" name="Bị chặn/Từ chối" stroke="#D13A5E" fillOpacity={1} fill="url(#colorRejected)" />
+                <Area type="monotone" dataKey="approved" name="Đã duyệt" stroke={CHART_TOKENS.approvedStroke} fillOpacity={1} fill="url(#colorApproved)" />
+                <Area type="monotone" dataKey="rejected" name="Bị chặn/Từ chối" stroke={CHART_TOKENS.rejectedStroke} fillOpacity={1} fill="url(#colorRejected)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -232,20 +242,20 @@ export const AdminOverviewPage: React.FC = () => {
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={activeChartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#FFF3E6" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#5E5370' }} />
-                <YAxis yAxisId="left" tick={{ fontSize: 10, fill: '#5E5370' }} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: '#5E5370' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_TOKENS.gridStroke} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: CHART_TOKENS.tooltipBg,
                     borderRadius: '1rem',
-                    border: '1px solid #FFF3E6',
+                    border: `1px solid ${CHART_TOKENS.gridStroke}`,
                     fontSize: '12px',
                   }}
                 />
-                <Line yAxisId="left" type="monotone" dataKey="cost" name="Chi phí ($)" stroke="#6C5CE7" strokeWidth={2.5} dot={false} />
-                <Line yAxisId="right" type="monotone" dataKey="avgLatency" name="Độ trễ (ms)" stroke="#8A5A00" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                <Line yAxisId="left" type="monotone" dataKey="cost" name="Chi phí ($)" stroke={CHART_TOKENS.costStroke} strokeWidth={2.5} dot={false} />
+                <Line yAxisId="right" type="monotone" dataKey="avgLatency" name="Độ trễ (ms)" stroke={CHART_TOKENS.latencyStroke} strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -273,11 +283,11 @@ export const AdminOverviewPage: React.FC = () => {
             <div className="h-56 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={rejectionCategories} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#FFF9F0" />
-                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_TOKENS.gridStroke} />
+                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: CHART_TOKENS.textMuted }} />
                   <YAxis dataKey="name" type="category" width={115} tick={{ fontSize: 11, fill: '#2E2540' }} />
-                  <Tooltip contentStyle={{ borderRadius: '1rem' }} />
-                  <Bar dataKey="count" name="Số lần ghi nhận" fill="#D13A5E" radius={[0, 8, 8, 0]} />
+                  <Tooltip contentStyle={{ borderRadius: '1rem', backgroundColor: CHART_TOKENS.tooltipBg, border: `1px solid ${CHART_TOKENS.tooltipBorder}` }} />
+                  <Bar dataKey="count" name="Số lần ghi nhận" fill={CHART_TOKENS.rejectedStroke} radius={[0, 8, 8, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

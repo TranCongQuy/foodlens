@@ -34,6 +34,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { Textarea } from '@/components/ui/Textarea';
 import { soundEffects } from '@/lib/sound';
+import { useWakeLock } from '@/lib/hooks/useWakeLock';
 
 // Helper for emotion emoji
 const getEmotionEmoji = (emotion: string): string => {
@@ -87,6 +88,9 @@ export const StoryReadingPage: React.FC = () => {
 
   const [fetchedStory, setFetchedStory] = useState<Story | null>(null);
   const [isLoadingStory, setIsLoadingStory] = useState<boolean>(Boolean(id));
+
+  // Modern Web API: Screen Wake Lock during story reading session
+  useWakeLock(true);
 
   useEffect(() => {
     let active = true;
@@ -772,6 +776,8 @@ export const StoryReadingPage: React.FC = () => {
                                 key={pg.id}
                                 src={story.drawing.image_path}
                                 alt={story.title}
+                                fetchPriority="high"
+                                decoding="async"
                                 initial={isReducedMotion ? false : { scale: 1, x: 0, y: 0 }}
                                 animate={
                                   isReducedMotion || !isCurrentSpread
@@ -997,6 +1003,8 @@ export const StoryReadingPage: React.FC = () => {
                         key={currentPage.id}
                         src={story.drawing.image_path}
                         alt={story.title}
+                        fetchPriority="high"
+                        decoding="async"
                         initial={isReducedMotion ? false : { scale: 1, x: 0, y: 0 }}
                         animate={isReducedMotion ? { scale: 1, x: 0, y: 0 } : {
                           scale: safeZoom,

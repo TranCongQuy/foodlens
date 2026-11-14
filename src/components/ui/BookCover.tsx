@@ -20,6 +20,7 @@ export interface BookCoverProps {
   onDelete?: (storyId: string) => Promise<boolean | void>;
   onShare?: (story: Story) => void;
   className?: string;
+  priority?: boolean;
 }
 
 export const BookCover: React.FC<BookCoverProps> = ({
@@ -28,6 +29,7 @@ export const BookCover: React.FC<BookCoverProps> = ({
   onDelete,
   onShare,
   className = '',
+  priority = false,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
@@ -75,7 +77,9 @@ export const BookCover: React.FC<BookCoverProps> = ({
               src={story.drawing.image_path}
               alt={story.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
+              loading={priority ? undefined : 'lazy'}
+              fetchPriority={priority ? 'high' : undefined}
+              decoding="async"
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-4xl bg-brand-100/30 text-ink-faint">

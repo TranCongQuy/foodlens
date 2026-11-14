@@ -126,7 +126,8 @@ export const RegisterPage: React.FC = () => {
         <Input
           label={vi.auth.emailLabel}
           type="email"
-          autoComplete="email"
+          autoComplete="username"
+          spellCheck={false}
           placeholder={vi.auth.emailPlaceholder}
           leftIcon={<Mail className="w-4 h-4" />}
           error={errors.email?.message}

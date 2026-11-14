@@ -1,0 +1,45 @@
+/* Hallmark & Modern Web Tokens - Single Source of Truth at :root */
+:root {
+  /* Surfaces & Inks */
+  --color-bg: #FFF9F0;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #FFF3E6;
+  --color-surface-3: #FCE8D5;
+  --color-ink: #2E2540;
+  --color-ink-soft: #5E5370;
+  --color-ink-faint: #8A7F99;
+
+  /* Brand Palette */
+  --color-brand: #D13A5E;
+  --color-brand-hover: #B92F51;
+  --color-brand-light: #FFE3EA;
+  --color-primary: #D13A5E;
+  --color-magic: #6C5CE7;
+  --color-magic-hover: #5B4BD6;
+
+  /* Semantic Status (WCAG 2.1 AA Compliant) */
+  --color-success: #166E48;
+  --color-success-bg: #DDF6E9;
+  --color-warning: #8A5A00;
+  --color-warning-bg: #FFF1B8;
+  --color-danger: #B42343;
+  --color-danger-bg: #FFE3EA;
+  --color-info: #1F5FA8;
+  --color-info-bg: #CDE7FF;
+
+  /* Storybook Pastels */
+  --color-mint: #C9F0DD;
+  --color-sky: #CDE7FF;
+  --color-lavender: #E3D9FF;
+  --color-butter: #FFF1B8;
+  --color-peach: #FFD6BA;
+
+  /* Radii */
+  --radius-card: 28px;
+  --radius-input: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgba(46, 37, 64, 0.06), 0 12px 32px -12px rgba(46, 37, 64, 0.14);
+  --shadow-pop: 0 24px 48px -16px rgba(46, 37, 64, 0.28);
+}

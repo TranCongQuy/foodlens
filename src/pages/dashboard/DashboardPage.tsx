@@ -142,17 +142,13 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-10">
-      {/* 1. Hero Split (Modern Storybook with Polaroid Stage) */}
-      <div className="relative rounded-[32px] bg-surface-2 border border-ink/10 p-6 md:p-10 overflow-hidden shadow-card">
-        <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-peach/40 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 -right-16 w-72 h-72 rounded-full bg-lavender/40 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 left-1/3 w-60 h-60 rounded-full bg-mint/40 blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* 1. Hero Showcase (Single-Layer Editorial Canvas - Hallmark & Impeccable Standard) */}
+      <div className="relative rounded-[32px] bg-surface-2 border border-ink/10 p-6 md:p-10 shadow-card">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Greeting & Primary CTA */}
           <div className="lg:col-span-7 space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-heading font-extrabold uppercase tracking-wider text-brand-600">
+              <span className="text-xs font-heading font-bold text-brand-600 bg-brand-light/70 px-3 py-1 rounded-full border border-brand-400/30">
                 {vi.dashboard.welcome} {profile?.full_name || 'Phụ huynh'} ✨
               </span>
               <Badge variant="mint" size="sm">
@@ -201,42 +197,40 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Polaroid Artwork Stage with Tape Decal */}
+          {/* Right Column: Integrated Artwork Canvas (No Nested Cards - Craft Floor Aligned) */}
           <div className="lg:col-span-5 flex justify-center items-center">
-            <div className="relative rotate-[-2deg] hover:rotate-0 transition-transform duration-300">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-20 h-6 bg-butter/90 rounded-sm shadow-xs border border-ink/10 z-20 -rotate-1" />
-
-              <div className="bg-surface p-3.5 pb-5 rounded-2xl shadow-card border border-ink/10 max-w-[280px] w-full text-center">
-                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-2 relative shadow-inner">
-                  {latestStory?.drawing?.image_path ? (
-                    <img
-                      src={latestStory.drawing.image_path}
-                      alt={latestStory.title || 'Tranh vẽ mới nhất'}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-4xl bg-brand-100/30 p-4">
-                      <span>🎨</span>
-                      <span className="text-[11px] font-heading font-bold text-ink-soft mt-2">
-                        Chưa có bức vẽ nào
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-surface/90 backdrop-blur-xs text-[10px] font-heading font-bold text-brand-600 flex items-center gap-1 shadow-xs">
-                    <Sparkles className="w-3 h-3 text-[#F472B6]" />
-                    <span>{latestStory ? 'Nét vẽ mới nhất' : 'Bàn vẽ chờ con'}</span>
+            <div className="w-full max-w-[340px] space-y-2.5">
+              <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-surface border-2 border-ink/10 relative shadow-card">
+                {latestStory?.drawing?.image_path ? (
+                  <img
+                    src={latestStory.drawing.image_path}
+                    alt={latestStory.title || 'Tranh vẽ mới nhất'}
+                    className="w-full h-full object-cover"
+                    fetchPriority="high"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-4xl bg-brand-light/30 p-4">
+                    <span>🎨</span>
+                    <span className="text-xs font-heading font-bold text-ink-soft mt-2">
+                      Bàn vẽ đang chờ nét cọ của con
+                    </span>
                   </div>
-                </div>
+                )}
 
-                <div className="mt-3">
-                  <span className="font-heading font-extrabold text-xs text-ink block truncate">
-                    {latestStory?.title || 'Sẵn sàng dệt truyện mới'}
-                  </span>
-                  <span className="text-[10px] text-ink-faint block mt-0.5">
-                    {currentChild ? `${formatChildName(currentChild.nickname)} • ${currentChild.age} tuổi` : 'Chưa có hồ sơ bé'}
-                  </span>
+                <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-surface/95 backdrop-blur-xs text-[11px] font-heading font-bold text-brand-600 flex items-center gap-1.5 shadow-xs border border-ink/5">
+                  <Sparkles className="w-3.5 h-3.5 text-magic" />
+                  <span>{latestStory ? 'Nét vẽ mới nhất' : 'Sẵn sàng sáng tạo'}</span>
                 </div>
+              </div>
+
+              <div className="px-1 text-center sm:text-left flex items-center justify-between gap-2">
+                <span className="font-heading font-extrabold text-xs text-ink truncate block">
+                  {latestStory?.title || 'Chưa có ấn bản sách nào'}
+                </span>
+                <span className="text-[11px] text-ink-faint shrink-0">
+                  {currentChild ? `${formatChildName(currentChild.nickname)} • ${currentChild.age}t` : 'Chờ hồ sơ bé'}
+                </span>
               </div>
             </div>
           </div>
@@ -452,10 +446,11 @@ export const DashboardPage: React.FC = () => {
           />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {childStories.slice(0, 3).map((story) => (
+            {childStories.slice(0, 3).map((story, idx) => (
               <BookCover
                 key={story.id}
                 story={story}
+                priority={idx === 0}
                 onRead={(id) => navigate(`/story/${id}`)}
                 onDelete={handleDeleteStory}
                 onShare={handleShareStory}
