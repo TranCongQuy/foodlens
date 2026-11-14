@@ -9,7 +9,6 @@ import {
 import { useStoryStore } from '@/store/storyStore';
 import { isUsingDemoSession } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
-import { isStoryApproved } from '@/types/database';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
@@ -53,11 +52,9 @@ export const TrustPage: React.FC = () => {
               .limit(100),
           ]);
 
-          const total = totalCount ?? stories.length;
-          const approved =
-            approvedCount ?? stories.filter((s) => isStoryApproved(s.status)).length;
-          const rejected =
-            rejectedCount ?? stories.filter((s) => s.status === 'rejected').length;
+          const total = typeof totalCount === 'number' ? totalCount : 0;
+          const approved = typeof approvedCount === 'number' ? approvedCount : 0;
+          const rejected = typeof rejectedCount === 'number' ? rejectedCount : 0;
 
           const validLatencies = (latencyLogs || [])
             .map((l) => Number((l as { latency_ms?: number }).latency_ms) || 0)
@@ -82,25 +79,23 @@ export const TrustPage: React.FC = () => {
             blockedCount: rejected + inputBlocked,
             totalStories: total,
           });
-        } catch {
-          computeFromStore();
+        } catch (err) {
+          console.error('Failed to load trust stats from Supabase:', err);
+          setStats({
+            approvalRateText: 'Chưa có dữ liệu',
+            avgReviewTimeText: 'Chưa có dữ liệu',
+            blockedCount: 0,
+            totalStories: 0,
+          });
         }
       } else {
-        computeFromStore();
+        setStats({
+          approvalRateText: 'Chưa có dữ liệu',
+          avgReviewTimeText: 'Chưa có dữ liệu',
+          blockedCount: 0,
+          totalStories: 0,
+        });
       }
-    }
-
-    function computeFromStore() {
-      const total = stories.length;
-      const approved = stories.filter((s) => isStoryApproved(s.status)).length;
-      const rejected = stories.filter((s) => s.status === 'rejected').length;
-
-      setStats({
-        approvalRateText: total > 0 ? `${Math.round((approved / total) * 100)}%` : 'Chưa có dữ liệu',
-        avgReviewTimeText: 'Chưa có dữ liệu',
-        blockedCount: rejected,
-        totalStories: total,
-      });
     }
 
     loadRealStats();

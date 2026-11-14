@@ -4,6 +4,9 @@ import { Home, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export const NotFoundPage: React.FC = () => {
+  React.useEffect(() => {
+    document.title = 'Trang không tìm thấy | DrawToStory';
+  }, []);
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-6 text-center">
       <div className="max-w-md w-full bg-surface rounded-card p-8 border border-ink/10 shadow-card">
