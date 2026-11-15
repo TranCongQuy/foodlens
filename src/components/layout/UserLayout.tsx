@@ -266,7 +266,7 @@ export const UserLayout: React.FC = () => {
                   >
                     <div className="px-3 py-2 border-b border-ink/10">
                       <div className="font-heading font-bold text-xs text-ink truncate">
-                        {profile?.full_name || 'Phụ huynh'}
+                        {profile?.full_name || 'Bạn'}
                       </div>
                       <div className="text-[11px] text-ink-faint">
                         {profile?.role === 'admin' ? 'Quản trị viên' : 'Gia đình yêu thương'}

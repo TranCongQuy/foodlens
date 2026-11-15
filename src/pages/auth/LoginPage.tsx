@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ShieldCheck, ArrowRight, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/authStore';
 import { vi } from '@/lib/i18n/vi';
@@ -18,7 +18,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login, loginQuick, isLoading } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
   const navigate = useNavigate();
   const [authError, setAuthError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,29 +34,6 @@ export const LoginPage: React.FC = () => {
       password: '',
     },
   });
-
-  const handleQuickLogin = async (e: React.MouseEvent, role: 'parent' | 'admin') => {
-    e.preventDefault();
-    e.stopPropagation();
-    setAuthError(null);
-    const success = await loginQuick(role);
-    if (success) {
-      toast.success(
-        role === 'admin'
-          ? 'Đã vào bảng điều khiển Quản trị viên!'
-          : 'Đã vào không gian Phụ huynh!'
-      );
-      if (role === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
-    } else {
-      const err = useAuthStore.getState().error || 'Không thể đăng nhập nhanh.';
-      setAuthError(err);
-      toast.error(err);
-    }
-  };
 
   const onSubmit = async (data: LoginFormData) => {
     setAuthError(null);
@@ -80,7 +57,7 @@ export const LoginPage: React.FC = () => {
     <div className="bg-surface rounded-card border border-ink/10 shadow-card p-6 sm:p-8">
       <div className="text-center mb-6">
         <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-surface-2 border border-ink/10 flex items-center justify-center text-3xl shadow-xs">
-          🎨
+          🥗
         </div>
         <h1 className="text-2xl font-heading font-extrabold text-ink">
           {vi.auth.loginTitle}
@@ -93,68 +70,6 @@ export const LoginPage: React.FC = () => {
       {authError && (
         <div className="mb-4 p-3.5 rounded-2xl bg-danger-bg border border-danger/25 text-danger text-xs font-bold leading-relaxed">
           {authError}
-        </div>
-      )}
-
-      {/* 2 Quick 1-Click Demo Login Buttons (Configurable via VITE_ENABLE_QUICK_LOGIN) */}
-      {import.meta.env.VITE_ENABLE_QUICK_LOGIN !== 'false' && (
-        <div className="mb-6 p-4 rounded-2xl bg-surface-2 border border-ink/10 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-heading font-extrabold text-ink flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-              Đăng nhập nhanh 1 chạm (Demo)
-            </span>
-            <span className="text-[10px] text-ink-faint font-bold">1 bấm vào ngay</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              onClick={(e) => handleQuickLogin(e, 'parent')}
-              disabled={isLoading}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-surface border border-ink/10 hover:border-brand-600 hover:shadow-xs transition-all text-left cursor-pointer group"
-            >
-              <div className="w-9 h-9 rounded-lg bg-brand-light flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-                👧
-              </div>
-              <div className="overflow-hidden">
-                <span className="text-xs font-heading font-extrabold text-ink block truncate group-hover:text-brand-600 transition-colors">
-                  Tài khoản Phụ huynh
-                </span>
-                <span className="text-[10px] text-ink-faint block truncate">
-                  Mẹ Thu Hà • me@phuhuynh.vn
-                </span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => handleQuickLogin(e, 'admin')}
-              disabled={isLoading}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-surface border border-ink/10 hover:border-magic hover:shadow-xs transition-all text-left cursor-pointer group"
-            >
-              <div className="w-9 h-9 rounded-lg bg-magic/15 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-                🛡️
-              </div>
-              <div className="overflow-hidden">
-                <span className="text-xs font-heading font-extrabold text-ink block truncate group-hover:text-magic transition-colors">
-                  Tài khoản Admin
-                </span>
-                <span className="text-[10px] text-ink-faint block truncate">
-                  Quản trị • admin@drawtostory.vn
-                </span>
-              </div>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {import.meta.env.VITE_ENABLE_QUICK_LOGIN !== 'false' && (
-        <div className="relative flex items-center justify-center my-5">
-          <div className="border-t border-ink/10 w-full" />
-          <span className="bg-surface px-3 text-[11px] font-heading font-bold text-ink-faint uppercase tracking-wider absolute">
-            Hoặc gõ email & mật khẩu
-          </span>
         </div>
       )}
 

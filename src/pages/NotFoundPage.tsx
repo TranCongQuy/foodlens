@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 
 export const NotFoundPage: React.FC = () => {
   React.useEffect(() => {
-    document.title = 'Trang không tìm thấy | DrawToStory';
+    document.title = 'Trang không tìm thấy | FoodLens';
   }, []);
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-6 text-center">
