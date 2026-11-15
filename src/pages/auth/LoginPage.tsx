@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ShieldCheck, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, Eye, EyeOff, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/authStore';
 import { vi } from '@/lib/i18n/vi';
@@ -18,10 +18,33 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login, isLoading } = useAuthStore();
+  const { login, loginQuick, isLoading } = useAuthStore();
   const navigate = useNavigate();
   const [authError, setAuthError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [quickRole, setQuickRole] = useState<'user' | 'admin' | null>(null);
+
+  const handleQuickLogin = async (role: 'user' | 'admin') => {
+    setAuthError(null);
+    setQuickRole(role);
+    const success = await loginQuick(role);
+    setQuickRole(null);
+    if (success) {
+      const currentProfile = useAuthStore.getState().profile;
+      toast.success(
+        role === 'admin' ? 'Đăng nhập nhanh vai trò Admin thành công!' : 'Đăng nhập nhanh thành công! Chào mừng bạn.'
+      );
+      if (currentProfile?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } else {
+      const storeErr = useAuthStore.getState().error;
+      setAuthError(storeErr || 'Đăng nhập nhanh thất bại. Vui lòng thử lại.');
+      toast.error('Đăng nhập nhanh không thành công');
+    }
+  };
 
   const {
     register,
@@ -129,6 +152,45 @@ export const LoginPage: React.FC = () => {
           {vi.auth.submitLogin}
         </Button>
       </form>
+
+      {/* Quick Login - 1 chạm như bản demo */}
+      <div className="mt-6">
+        <div className="relative flex items-center justify-center mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-ink/10" />
+          </div>
+          <span className="relative bg-surface px-3 text-[11px] font-heading font-bold text-ink-faint inline-flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-accent" /> HOẶC ĐĂNG NHẬP NHANH 1 CHẠM
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            isLoading={quickRole === 'user'}
+            disabled={isLoading || quickRole !== null}
+            onClick={() => handleQuickLogin('user')}
+          >
+            🥗 Người dùng
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            isLoading={quickRole === 'admin'}
+            disabled={isLoading || quickRole !== null}
+            onClick={() => handleQuickLogin('admin')}
+            leftIcon={<ShieldCheck className="w-4 h-4" />}
+          >
+            Admin
+          </Button>
+        </div>
+        <p className="text-center text-[11px] text-ink-faint mt-3 leading-relaxed">
+          Tài khoản trải nghiệm dùng chung cho cả lớp — bấm là vào ngay, không cần mật khẩu.
+        </p>
+      </div>
 
       <div className="text-center mt-6">
         <p className="text-xs text-ink-soft">

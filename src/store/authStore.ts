@@ -15,7 +15,7 @@ export interface AuthState {
   // Actions
   initialize: () => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
-  loginQuick: (role: 'parent' | 'admin') => Promise<boolean>;
+  loginQuick: (role: 'user' | 'admin') => Promise<boolean>;
   register: (
     email: string,
     password: string,
@@ -293,10 +293,10 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      loginQuick: async (role: 'parent' | 'admin') => {
+      loginQuick: async (role: 'user' | 'admin') => {
         set({ isLoading: true, error: null });
         try {
-          if (role !== 'parent' && role !== 'admin') {
+          if (role !== 'user' && role !== 'admin') {
             throw new Error('Vai trò đăng nhập không hợp lệ');
           }
 
