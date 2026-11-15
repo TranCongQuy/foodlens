@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Home, 
-  Sparkles, 
-  BookOpen, 
-  Smile, 
-  Settings, 
-  ShieldCheck, 
-  LogOut, 
+import {
+  Sparkles,
+  UtensilsCrossed,
+  Camera,
+  Settings,
+  ShieldCheck,
+  LogOut,
   ChevronDown,
   LayoutDashboard,
   Plus,
@@ -35,11 +34,13 @@ export const UserLayout: React.FC = () => {
   const accountDropdownRef = useRef<HTMLDivElement>(null);
 
   // Auto-open interactive User Guide upon login (unless user clicked "Tắt & Không hiện lại")
+  // FoodLens: không bật hướng dẫn truyện trên trang phân tích món ăn
   useEffect(() => {
+    if (location.pathname.startsWith('/foodlens')) return;
     if (profile?.id && shouldAutoOpenUserGuide(profile.id)) {
       setIsGuideOpen(true);
     }
-  }, [profile?.id]);
+  }, [profile?.id, location.pathname]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -69,18 +70,16 @@ export const UserLayout: React.FC = () => {
 
   const selectedChild = childrenList.find((c) => c.id === selectedChildId) || childrenList[0];
 
-  // Desktop Center Tabs
+  // Desktop Center Tabs — điều hướng chính của FoodLens
+  // (các trang truyện vẫn còn route làm đường lui, chỉ gỡ khỏi điều hướng)
   const centerTabs = [
-    { to: '/', label: 'Trang chủ', icon: Home },
-    { to: '/library', label: 'Tủ sách', icon: BookOpen },
+    { to: '/foodlens', label: 'FoodLens', icon: UtensilsCrossed },
     { to: '/trust', label: 'An toàn AI', icon: ShieldCheck },
   ];
 
   // Mobile Bottom Tab Items
   const mobileTabs = [
-    { to: '/', label: 'Trang chủ', icon: Home },
-    { to: '/library', label: 'Tủ sách', icon: BookOpen },
-    { to: '/create', label: 'Tạo', isFab: true },
+    { to: '/foodlens', label: 'FoodLens', icon: UtensilsCrossed },
     { to: '/trust', label: 'An toàn', icon: ShieldCheck },
     { to: '/settings', label: 'Cài đặt', icon: Settings },
   ];
@@ -100,7 +99,7 @@ export const UserLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* 1. Left: Brand Logo */}
-          <NavLink to="/" className="flex items-center gap-2.5 group shrink-0">
+          <NavLink to="/foodlens" className="flex items-center gap-2.5 group shrink-0">
             <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white shadow-btn-primary group-hover:scale-105 transition-transform">
               <Sparkles className="w-4 h-4" />
             </div>
@@ -234,26 +233,15 @@ export const UserLayout: React.FC = () => {
               </div>
             )}
 
-            {/* Create Story CTA Button (Primary Button, not a tab) */}
+            {/* FoodLens CTA Button (Primary Button, not a tab) */}
             <Button
               variant="primary"
               size="sm"
-              onClick={() => navigate('/create')}
-              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => navigate('/foodlens')}
+              leftIcon={<Camera className="w-4 h-4" />}
               className="hidden sm:inline-flex"
             >
-              Tạo truyện
-            </Button>
-
-            {/* Kid Mode Button (Secondary Pill) */}
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/kid')}
-              leftIcon={<Smile className="w-4 h-4 text-brand-600" />}
-              className="hidden md:inline-flex"
-            >
-              Chế độ bé
+              Phân tích món
             </Button>
 
             {/* Account Profile Menu */}
@@ -298,18 +286,6 @@ export const UserLayout: React.FC = () => {
                         <span>Trang Quản trị AI</span>
                       </button>
                     )}
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsAccountDropdownOpen(false);
-                        navigate('/kid');
-                      }}
-                      className="w-full flex md:hidden items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-heading font-bold text-ink hover:bg-surface-2 transition-colors cursor-pointer"
-                    >
-                      <Smile className="w-4 h-4 text-brand-600" />
-                      <span>Chế độ bé</span>
-                    </button>
 
                     <button
                       type="button"
@@ -366,25 +342,7 @@ export const UserLayout: React.FC = () => {
         aria-label="Điều hướng di động"
       >
         {mobileTabs.map((item) => {
-          if (item.isFab) {
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className="relative -top-5 flex flex-col items-center group cursor-pointer"
-                aria-label="Thần kỳ hóa tạo truyện mới"
-              >
-                <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#8B7CF6] to-[#F472B6] text-white flex items-center justify-center shadow-btn-magic group-active:scale-95 transition-transform border-4 border-bg">
-                  <Sparkles className="w-6 h-6 animate-pulse" />
-                </div>
-                <span className="text-[10px] font-heading font-extrabold text-brand-600 mt-0.5">
-                  {item.label}
-                </span>
-              </NavLink>
-            );
-          }
-
-          const Icon = item.icon!;
+          const Icon = item.icon;
           const isActive = location.pathname === item.to;
 
           return (

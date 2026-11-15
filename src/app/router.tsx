@@ -30,6 +30,9 @@ const SharedStoryPage = lazy(() =>
 const KidModePage = lazy(() =>
   import('@/pages/kid/KidModePage').then((m) => ({ default: m.KidModePage }))
 );
+const FoodLensPage = lazy(() =>
+  import('@/pages/foodlens/FoodLensPage').then((m) => ({ default: m.FoodLensPage }))
+);
 
 // Lazy-loaded Admin Layout & Pages (isolates Recharts & Admin bundle from Parent users)
 const AdminLayout = lazy(() =>
@@ -112,7 +115,11 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         children: [
-          { index: true, element: <DashboardPage /> },
+          // FoodLens là trang chủ của vai người dùng (đặc tả FoodLens mục 3)
+          { index: true, element: <Navigate to="/foodlens" replace /> },
+          { path: 'foodlens', element: withSuspense(<FoodLensPage />) },
+          // Các route truyện giữ nguyên làm đường lui, chỉ gỡ khỏi điều hướng chính
+          { path: 'dashboard', element: <DashboardPage /> },
           { path: 'create', element: withSuspense(<CreateStoryPage />) },
           { path: 'story/:id', element: withSuspense(<StoryReadingPage />) },
           { path: 'library', element: <LibraryPage /> },

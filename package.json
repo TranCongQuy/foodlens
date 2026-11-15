@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit && tsc --noEmit -p supabase/functions/tsconfig.json",
     "check:contrast": "node scripts/check-contrast.js",
-    "test:pipeline": "node scripts/test-pipeline.js"
+    "test:pipeline": "node scripts/test-pipeline.js",
+    "test:foodlens": "node scripts/test-foodlens.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
