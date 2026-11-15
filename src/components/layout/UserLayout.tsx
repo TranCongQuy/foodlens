@@ -8,46 +8,26 @@ import {
   Settings,
   ShieldCheck,
   LogOut,
-  ChevronDown,
-  LayoutDashboard,
-  Plus,
-  BookOpenCheck
+  LayoutDashboard
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { vi } from '@/lib/i18n/vi';
-import { cn, formatChildName } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { UserGuideModal } from '@/features/onboarding/components/UserGuideModal';
-import { shouldAutoOpenUserGuide } from '@/features/onboarding/utils/userGuideStorage';
 
 export const UserLayout: React.FC = () => {
-  const { profile, logout, childrenList, selectedChildId, setSelectedChildId } = useAuthStore();
+  const { profile, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Dropdown states
-  const [isChildDropdownOpen, setIsChildDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
-  const childDropdownRef = useRef<HTMLDivElement>(null);
   const accountDropdownRef = useRef<HTMLDivElement>(null);
-
-  // Auto-open interactive User Guide upon login (unless user clicked "Tắt & Không hiện lại")
-  // FoodLens: không bật hướng dẫn truyện trên trang phân tích món ăn
-  useEffect(() => {
-    if (location.pathname.startsWith('/foodlens')) return;
-    if (profile?.id && shouldAutoOpenUserGuide(profile.id)) {
-      setIsGuideOpen(true);
-    }
-  }, [profile?.id, location.pathname]);
 
   // Close dropdowns on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (childDropdownRef.current && !childDropdownRef.current.contains(e.target as Node)) {
-        setIsChildDropdownOpen(false);
-      }
       if (accountDropdownRef.current && !accountDropdownRef.current.contains(e.target as Node)) {
         setIsAccountDropdownOpen(false);
       }
@@ -60,15 +40,6 @@ export const UserLayout: React.FC = () => {
     await logout();
     navigate('/login');
   };
-
-  // Focus Routes: HIDE ALL NAVIGATION CHROME
-  const isFocusRoute = 
-    location.pathname.startsWith('/create') ||
-    location.pathname.startsWith('/story/') ||
-    location.pathname.startsWith('/kid') ||
-    location.pathname.startsWith('/shared/');
-
-  const selectedChild = childrenList.find((c) => c.id === selectedChildId) || childrenList[0];
 
   // Desktop Center Tabs — điều hướng chính của FoodLens
   // (các trang truyện vẫn còn route làm đường lui, chỉ gỡ khỏi điều hướng)
@@ -83,14 +54,6 @@ export const UserLayout: React.FC = () => {
     { to: '/trust', label: 'An toàn', icon: ShieldCheck },
     { to: '/settings', label: 'Cài đặt', icon: Settings },
   ];
-
-  if (isFocusRoute) {
-    return (
-      <div className="min-h-screen bg-bg text-ink flex flex-col overflow-x-hidden">
-        <Outlet />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-bg text-ink flex flex-col selection:bg-brand-100 selection:text-brand-700 overflow-x-hidden">
@@ -150,89 +113,6 @@ export const UserLayout: React.FC = () => {
           {/* 3. Right: Child Selector, Create CTA, Kid Mode & Account */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Global Child Selector (Popover) */}
-            {childrenList.length > 0 && selectedChild && (
-              <div ref={childDropdownRef} className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsChildDropdownOpen(!isChildDropdownOpen)}
-                  className="flex items-center gap-2 bg-surface hover:bg-surface-2 border border-ink/15 rounded-full px-3 py-1.5 shadow-xs transition-all cursor-pointer min-h-[40px]"
-                  aria-expanded={isChildDropdownOpen}
-                  aria-haspopup="listbox"
-                  aria-label="Chọn bé đang xem"
-                >
-                  <span 
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-xs"
-                    style={{ backgroundColor: selectedChild.avatar_color + '40' }}
-                  >
-                    {selectedChild.avatar_emoji}
-                  </span>
-                  <span className="hidden sm:inline text-xs font-heading font-bold text-ink">
-                    Đang xem: <strong className="text-brand-600">{formatChildName(selectedChild.nickname)}</strong>
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-ink-faint" />
-                </button>
-
-                {/* Popover Dropdown */}
-                <AnimatePresence>
-                  {isChildDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-56 bg-surface border border-ink/10 rounded-2xl shadow-pop p-2 z-50 space-y-1"
-                    >
-                      <div className="px-3 py-1.5 text-[11px] font-heading font-bold text-ink-faint uppercase tracking-wider">
-                        Chọn hồ sơ bé
-                      </div>
-                      {childrenList.map((kid) => (
-                        <button
-                          key={kid.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedChildId(kid.id);
-                            setIsChildDropdownOpen(false);
-                          }}
-                          className={cn(
-                            'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-heading font-bold transition-colors cursor-pointer',
-                            kid.id === selectedChild.id
-                              ? 'bg-brand-100 text-brand-700'
-                              : 'text-ink hover:bg-surface-2'
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span 
-                              className="w-6 h-6 rounded-full flex items-center justify-center text-xs"
-                              style={{ backgroundColor: kid.avatar_color + '40' }}
-                            >
-                              {kid.avatar_emoji}
-                            </span>
-                            <span>{formatChildName(kid.nickname)}</span>
-                          </div>
-                          <span className="text-[11px] text-ink-faint">{kid.age} tuổi</span>
-                        </button>
-                      ))}
-
-                      <div className="border-t border-ink/10 pt-1 mt-1">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsChildDropdownOpen(false);
-                            navigate('/settings');
-                          }}
-                          className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-ink-soft hover:text-ink font-heading font-bold rounded-xl hover:bg-surface-2 transition-colors"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          <span>Thêm bé mới...</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
             {/* FoodLens CTA Button (Primary Button, not a tab) */}
             <Button
               variant="primary"
@@ -269,7 +149,7 @@ export const UserLayout: React.FC = () => {
                         {profile?.full_name || 'Bạn'}
                       </div>
                       <div className="text-[11px] text-ink-faint">
-                        {profile?.role === 'admin' ? 'Quản trị viên' : 'Gia đình yêu thương'}
+                        {profile?.role === 'admin' ? 'Quản trị viên' : 'Người dùng FoodLens'}
                       </div>
                     </div>
 
@@ -298,20 +178,6 @@ export const UserLayout: React.FC = () => {
                       <Settings className="w-4 h-4 text-ink-soft" />
                       <span>{vi.nav.settings}</span>
                     </button>
-
-                    {!location.pathname.startsWith('/foodlens') && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsAccountDropdownOpen(false);
-                        setIsGuideOpen(true);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-heading font-bold text-ink hover:bg-surface-2 transition-colors cursor-pointer"
-                    >
-                      <BookOpenCheck className="w-4 h-4 text-brand-600" />
-                      <span>Hướng dẫn sử dụng</span>
-                    </button>
-                    )}
 
                     <button
                       type="button"
@@ -364,13 +230,6 @@ export const UserLayout: React.FC = () => {
           );
         })}
       </nav>
-      {/* Interactive Swipeable User Guide Modal */}
-      <UserGuideModal
-        isOpen={isGuideOpen && !location.pathname.startsWith('/foodlens')}
-        onClose={() => setIsGuideOpen(false)}
-        role={profile?.role || 'user'}
-        userId={profile?.id}
-      />
     </div>
   );
 };

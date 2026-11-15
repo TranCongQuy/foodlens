@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { Lock, Unlock, Search, Edit3, Check } from 'lucide-react';
+import { Lock, Unlock, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAdminStore } from '@/store/adminStore';
 import { useAuthStore } from '@/store/authStore';
 import { vi } from '@/lib/i18n/vi';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
 import { Profile } from '@/types/database';
 
 export const UserManagementPage: React.FC = () => {
   const { profile: currentAdmin } = useAuthStore();
-  const { usersList, toggleUserLock, updateUserQuota } = useAdminStore();
+  const { usersList, toggleUserLock } = useAdminStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingUser, setEditingUser] = useState<Profile | null>(null);
-  const [customQuotaInput, setCustomQuotaInput] = useState<number>(5);
-  const [isSavingQuota, setIsSavingQuota] = useState(false);
 
   const filteredUsers = usersList.filter((u) => {
     if (!searchQuery.trim()) return true;
@@ -29,25 +23,6 @@ export const UserManagementPage: React.FC = () => {
       u.id.toLowerCase().includes(q)
     );
   });
-
-  const handleOpenQuotaModal = (user: Profile) => {
-    setEditingUser(user);
-    setCustomQuotaInput(user.daily_quota);
-  };
-
-  const handleSaveCustomQuota = async () => {
-    if (!editingUser) return;
-    const val = Math.max(0, Math.min(200, Number(customQuotaInput) || 0));
-    setIsSavingQuota(true);
-    const ok = await updateUserQuota(editingUser.id, val);
-    setIsSavingQuota(false);
-    if (ok) {
-      toast.success(`Đã cập nhật hạn mức ${val} truyện/ngày cho ${editingUser.full_name}`);
-      setEditingUser(null);
-    } else {
-      toast.error('Không thể cập nhật hạn mức người dùng.');
-    }
-  };
 
   const handleToggleLock = async (u: Profile) => {
     if (u.id === currentAdmin?.id) {
@@ -75,7 +50,7 @@ export const UserManagementPage: React.FC = () => {
             {vi.admin.users.title}
           </h1>
           <p className="text-xs sm:text-sm text-ink-soft mt-1">
-            Quản trị tài khoản phụ huynh, phân quyền bảo vệ và điều chỉnh hạn mức sáng tác riêng
+            Quản trị tài khoản người dùng FoodLens, phân quyền và khóa hoặc mở khóa tài khoản
           </p>
         </div>
 
@@ -100,7 +75,6 @@ export const UserManagementPage: React.FC = () => {
               <tr>
                 <th className="p-4">{vi.admin.users.colName}</th>
                 <th className="p-4">{vi.admin.users.colRole}</th>
-                <th className="p-4 text-center">Hạn mức ngày</th>
                 <th className="p-4">{vi.admin.users.colStatus}</th>
                 <th className="p-4">Ngày tham gia</th>
                 <th className="p-4 text-right">Thao tác</th>
@@ -109,7 +83,7 @@ export const UserManagementPage: React.FC = () => {
             <tbody className="divide-y divide-ink/10">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-sm text-ink-soft font-heading font-bold">
+                  <td colSpan={5} className="p-10 text-center text-sm text-ink-soft font-heading font-bold">
                     Không tìm thấy người dùng phù hợp.
                   </td>
                 </tr>
@@ -128,11 +102,8 @@ export const UserManagementPage: React.FC = () => {
                       </td>
                       <td className="p-4">
                         <Badge variant={u.role === 'admin' ? 'magic' : 'mint'} size="sm">
-                          {u.role === 'admin' ? 'ADMIN' : 'PHỤ HUYNH'}
+                          {u.role === 'admin' ? 'ADMIN' : 'NGƯỜI DÙNG'}
                         </Badge>
-                      </td>
-                      <td className="p-4 text-center font-heading font-extrabold text-ink">
-                        {u.daily_quota} truyện
                       </td>
                       <td className="p-4">
                         {u.is_locked ? (
@@ -149,16 +120,6 @@ export const UserManagementPage: React.FC = () => {
                         {formatDate(u.created_at)}
                       </td>
                       <td className="p-4 text-right whitespace-nowrap space-x-1.5">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenQuotaModal(u)}
-                          className="p-2 text-ink-soft hover:text-brand-600 hover:bg-brand-100 rounded-xl transition-colors cursor-pointer"
-                          title={vi.admin.users.customQuota}
-                          aria-label={vi.admin.users.customQuota}
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-
                         <button
                           type="button"
                           disabled={isSelf}
@@ -191,40 +152,6 @@ export const UserManagementPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Quota Modal */}
-      <Modal
-        isOpen={Boolean(editingUser)}
-        onClose={() => setEditingUser(null)}
-        title="Cấp hạn mức riêng cho tài khoản"
-        description={`Điều chỉnh số lượng truyện mỗi ngày dành riêng cho ${editingUser?.full_name}`}
-        maxWidth="sm"
-      >
-        <div className="space-y-4 pt-2">
-          <Input
-            type="number"
-            min={0}
-            max={200}
-            label="Số truyện tối đa mỗi ngày:"
-            value={customQuotaInput}
-            onChange={(e) => setCustomQuotaInput(Number(e.target.value))}
-          />
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-ink/10">
-            <Button variant="ghost" size="sm" onClick={() => setEditingUser(null)}>
-              Hủy
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              isLoading={isSavingQuota}
-              onClick={handleSaveCustomQuota}
-              rightIcon={<Check className="w-4 h-4" />}
-            >
-              Lưu hạn mức
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 };
