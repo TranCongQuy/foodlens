@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+// FoodLens Design Tokens — bản sắc riêng: xanh lá tươi (fresh market),
+// font Be Vietnam Pro, bo góc gọn hiện đại. Khác hẳn DrawToStory (hồng kem truyện cổ tích).
 export default {
   content: [
     "./index.html",
@@ -7,57 +9,57 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Modern Storybook Tokens
-        bg: '#FFF9F0',
+        // Fresh Market Tokens
+        bg: '#F3F7EF',
         surface: '#FFFFFF',
-        'surface-2': '#FFF3E6',
-        'surface-3': '#FCE8D5',
+        'surface-2': '#EAF2E2',
+        'surface-3': '#DCE9CF',
 
         // Inks (WCAG 2.1 AA compliant)
         ink: {
-          DEFAULT: '#2E2540',
-          soft: '#5E5370',
-          faint: '#8A7F99',
+          DEFAULT: '#1F2A1E',
+          soft: '#4C5B4A',
+          faint: '#7C8B78',
         },
         main: {
-          DEFAULT: '#2E2540',
-          light: '#5E5370',
-          muted: '#5E5370',
-          subtle: '#8A7F99',
+          DEFAULT: '#1F2A1E',
+          light: '#4C5B4A',
+          muted: '#4C5B4A',
+          subtle: '#7C8B78',
         },
 
-        // Brand Palette
+        // Brand Palette — Emerald
         brand: {
-          100: '#FFE3EA',
-          400: '#F0607F',
-          600: '#D13A5E',
-          700: '#B92F51',
+          100: '#DFF2E3',
+          400: '#43A35F',
+          600: '#1E7A46',
+          700: '#175C35',
         },
         primary: {
-          DEFAULT: '#D13A5E',
-          hover: '#B92F51',
-          light: '#FFE3EA',
-          dark: '#B92F51',
+          DEFAULT: '#1E7A46',
+          hover: '#175C35',
+          light: '#DFF2E3',
+          dark: '#175C35',
         },
 
-        // Magic AI
+        // Accent — Amber (calo / năng lượng)
         magic: {
-          DEFAULT: '#6C5CE7',
-          600: '#6C5CE7',
-          700: '#5B4BD6',
+          DEFAULT: '#B45309',
+          600: '#B45309',
+          700: '#92400E',
         },
         accent: {
-          DEFAULT: '#6C5CE7',
-          hover: '#5B4BD6',
-          light: '#ECE9FF',
-          dark: '#4834D4',
+          DEFAULT: '#B45309',
+          hover: '#92400E',
+          light: '#FBEEDB',
+          dark: '#92400E',
         },
 
         // Pastel Decorative (backgrounds only, text always ink)
         mint: {
-          DEFAULT: '#C9F0DD',
-          light: '#E5FAF0',
-          dark: '#9FE2C0',
+          DEFAULT: '#CDEBCB',
+          light: '#E7F6E3',
+          dark: '#A5DCA0',
         },
         sky: {
           DEFAULT: '#CDE7FF',
@@ -65,9 +67,9 @@ export default {
           dark: '#A6D3FF',
         },
         lavender: {
-          DEFAULT: '#E3D9FF',
-          light: '#F3EFFF',
-          dark: '#C8B6FF',
+          DEFAULT: '#E6EFD2',
+          light: '#F4F9E8',
+          dark: '#CFE0A8',
         },
         butter: {
           DEFAULT: '#FFF1B8',
@@ -75,9 +77,9 @@ export default {
           dark: '#FFE485',
         },
         peach: {
-          DEFAULT: '#FFD6BA',
-          light: '#FFEBDC',
-          dark: '#F5B892',
+          DEFAULT: '#FFDFC4',
+          light: '#FFF0E0',
+          dark: '#F7BE8F',
         },
 
         // Nested & Top-level Semantic Status Tokens (WCAG AA Verified)
@@ -105,41 +107,41 @@ export default {
         'info-text': '#1F5FA8',
 
         cream: {
-          DEFAULT: '#FFF9F0',
+          DEFAULT: '#F3F7EF',
           50: '#FFFFFF',
-          100: '#FFFDF9',
-          200: '#FFF9F0',
-          300: '#FFF3E6',
+          100: '#FAFCF7',
+          200: '#F3F7EF',
+          300: '#EAF2E2',
         },
       },
       fontFamily: {
-        sans: ['Nunito', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
-        heading: ['Quicksand', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
-        story: ['Baloo 2', 'Quicksand', 'sans-serif'],
-        body: ['Nunito', 'sans-serif'],
+        sans: ['"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        story: ['"Be Vietnam Pro"', 'sans-serif'],
+        body: ['"Be Vietnam Pro"', 'sans-serif'],
       },
       borderRadius: {
-        card: '28px',
-        input: '16px',
+        card: '20px',
+        input: '14px',
         pill: '9999px',
-        '3xl': '1.5rem',
-        '4xl': '28px',
-        '5xl': '2.5rem',
+        '3xl': '1.25rem',
+        '4xl': '20px',
+        '5xl': '2rem',
       },
       boxShadow: {
-        xs: '0 1px 2px rgba(46,37,64,.05)',
-        card: '0 1px 2px rgba(46,37,64,.06), 0 12px 32px -12px rgba(46,37,64,.16)',
-        pop: '0 24px 48px -16px rgba(46,37,64,.28)',
-        soft: '0 1px 2px rgba(46,37,64,.06), 0 12px 32px -12px rgba(46,37,64,.16)',
-        'soft-lg': '0 24px 48px -16px rgba(46,37,64,.28)',
-        'soft-inner': 'inset 0 2px 4px 0 rgba(46, 37, 64, 0.06)',
-        'btn-primary': '0 8px 20px -8px rgba(209, 58, 94, 0.5)',
-        'btn-magic': '0 8px 20px -8px rgba(108, 92, 231, 0.5)',
-        'glow-primary': '0 0 25px -2px rgba(209, 58, 94, 0.35)',
-        'glow-accent': '0 0 25px -2px rgba(108, 92, 231, 0.35)',
+        xs: '0 1px 2px rgba(31,42,30,.05)',
+        card: '0 1px 2px rgba(31,42,30,.06), 0 12px 32px -12px rgba(31,42,30,.16)',
+        pop: '0 24px 48px -16px rgba(31,42,30,.28)',
+        soft: '0 1px 2px rgba(31,42,30,.06), 0 12px 32px -12px rgba(31,42,30,.16)',
+        'soft-lg': '0 24px 48px -16px rgba(31,42,30,.28)',
+        'soft-inner': 'inset 0 2px 4px 0 rgba(31, 42, 30, 0.06)',
+        'btn-primary': '0 8px 20px -8px rgba(30, 122, 70, 0.5)',
+        'btn-magic': '0 8px 20px -8px rgba(180, 83, 9, 0.5)',
+        'glow-primary': '0 0 25px -2px rgba(30, 122, 70, 0.35)',
+        'glow-accent': '0 0 25px -2px rgba(180, 83, 9, 0.35)',
       },
       backgroundImage: {
-        'magic-gradient': 'linear-gradient(135deg, #8B7CF6, #F472B6)',
+        'magic-gradient': 'linear-gradient(135deg, #43A35F, #E8A33D)',
       },
       animation: {
         float: 'float 4s ease-in-out infinite',

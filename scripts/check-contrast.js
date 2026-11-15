@@ -1,5 +1,5 @@
 /**
- * Automated WCAG 2.1 Contrast Checker for DrawToStory Design Tokens
+ * Automated WCAG 2.1 Contrast Checker for FoodLens Design Tokens
  * Fails build (exit code 1) if regular text < 4.5:1 or large/bold text < 3.0:1
  */
 
@@ -32,30 +32,30 @@ function getContrastRatio(hex1, hex2) {
 
 // Token pairs to verify
 const pairs = [
-  { name: 'Normal Text (bg -> ink)', bg: '#FFF9F0', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Soft Text (bg -> ink-soft)', bg: '#FFF9F0', fg: '#5E5370', min: 4.5, isLarge: false },
-  { name: 'Caption Bold ≥14px (bg -> ink-faint)', bg: '#FFF9F0', fg: '#8A7F99', min: 3.0, isLarge: true },
+  { name: 'Normal Text (bg -> ink)', bg: '#F3F7EF', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Soft Text (bg -> ink-soft)', bg: '#F3F7EF', fg: '#4C5B4A', min: 4.5, isLarge: false },
+  { name: 'Caption Bold ≥14px (bg -> ink-faint)', bg: '#F3F7EF', fg: '#7C8B78', min: 3.0, isLarge: true },
   
-  { name: 'Normal Text (surface -> ink)', bg: '#FFFFFF', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Soft Text (surface -> ink-soft)', bg: '#FFFFFF', fg: '#5E5370', min: 4.5, isLarge: false },
-  { name: 'Caption Bold ≥14px (surface -> ink-faint)', bg: '#FFFFFF', fg: '#8A7F99', min: 3.0, isLarge: true },
+  { name: 'Normal Text (surface -> ink)', bg: '#FFFFFF', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Soft Text (surface -> ink-soft)', bg: '#FFFFFF', fg: '#4C5B4A', min: 4.5, isLarge: false },
+  { name: 'Caption Bold ≥14px (surface -> ink-faint)', bg: '#FFFFFF', fg: '#7C8B78', min: 3.0, isLarge: true },
 
-  { name: 'Normal Text (surface-2 -> ink)', bg: '#FFF3E6', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Soft Text (surface-2 -> ink-soft)', bg: '#FFF3E6', fg: '#5E5370', min: 4.5, isLarge: false },
+  { name: 'Normal Text (surface-2 -> ink)', bg: '#EAF2E2', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Soft Text (surface-2 -> ink-soft)', bg: '#EAF2E2', fg: '#4C5B4A', min: 4.5, isLarge: false },
 
-  { name: 'Primary Button (brand-600 -> white)', bg: '#D13A5E', fg: '#FFFFFF', min: 4.5, isLarge: false },
-  { name: 'Primary Hover (brand-700 -> white)', bg: '#B92F51', fg: '#FFFFFF', min: 4.5, isLarge: false },
+  { name: 'Primary Button (brand-600 -> white)', bg: '#1E7A46', fg: '#FFFFFF', min: 4.5, isLarge: false },
+  { name: 'Primary Hover (brand-700 -> white)', bg: '#175C35', fg: '#FFFFFF', min: 4.5, isLarge: false },
 
   { name: 'Status Success (bg -> text)', bg: '#DDF6E9', fg: '#166E48', min: 4.5, isLarge: false },
   { name: 'Status Warning (bg -> text)', bg: '#FFF1B8', fg: '#8A5A00', min: 4.5, isLarge: false },
   { name: 'Status Danger (bg -> text)', bg: '#FFE3EA', fg: '#B42343', min: 4.5, isLarge: false },
   { name: 'Status Info (bg -> text)', bg: '#CDE7FF', fg: '#1F5FA8', min: 4.5, isLarge: false },
 
-  { name: 'Pastel Mint (bg -> ink)', bg: '#C9F0DD', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Pastel Sky (bg -> ink)', bg: '#CDE7FF', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Pastel Lavender (bg -> ink)', bg: '#E3D9FF', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Pastel Butter (bg -> ink)', bg: '#FFF1B8', fg: '#2E2540', min: 4.5, isLarge: false },
-  { name: 'Pastel Peach (bg -> ink)', bg: '#FFD6BA', fg: '#2E2540', min: 4.5, isLarge: false },
+  { name: 'Pastel Mint (bg -> ink)', bg: '#CDEBCB', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Pastel Sky (bg -> ink)', bg: '#CDE7FF', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Pastel Lavender (bg -> ink)', bg: '#E6EFD2', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Pastel Butter (bg -> ink)', bg: '#FFF1B8', fg: '#1F2A1E', min: 4.5, isLarge: false },
+  { name: 'Pastel Peach (bg -> ink)', bg: '#FFDFC4', fg: '#1F2A1E', min: 4.5, isLarge: false },
 ];
 
 console.log('=== WCAG 2.1 CONTRAST VERIFICATION ===');

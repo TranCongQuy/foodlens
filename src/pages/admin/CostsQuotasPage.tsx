@@ -1,280 +1,162 @@
-import React, { useState, useEffect } from 'react';
-import { Download, AlertTriangle, Search, DollarSign, Save } from 'lucide-react';
-import { toast } from 'sonner';
-import { useAdminStore } from '@/store/adminStore';
-import { vi } from '@/lib/i18n/vi';
+import React, { useEffect, useState } from 'react';
+import { DollarSign, Cpu, Timer, Info } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Input } from '@/components/ui/Input';
-import { formatCurrencyUSD, formatDate } from '@/lib/utils';
+import { formatCurrencyUSD } from '@/lib/utils';
+
+// Chi phi & Han muc AI cua FoodLens: doc truc tiep ai_logs (moi luot analyze-food deu ghi log).
+interface AiLogRow {
+  id: string;
+  action: string;
+  model: string | null;
+  tokens_in: number | null;
+  tokens_out: number | null;
+  cost_usd: number | null;
+  latency_ms: number | null;
+  status: string;
+  created_at: string;
+}
+
+const ACTION_LABELS: Record<string, string> = {
+  analyze_food: 'Phân tích món ăn',
+};
 
 export const CostsQuotasPage: React.FC = () => {
-  const {
-    kpis,
-    aiLogs,
-    globalDailyLimit,
-    updateGlobalDailyLimit,
-    updateMonthlyBudget,
-    exportAiLogsCsv,
-  } = useAdminStore();
-
-  const [limitInput, setLimitInput] = useState(globalDailyLimit);
-  const [budgetInput, setBudgetInput] = useState(kpis.monthlyBudgetUsd);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSavingLimit, setIsSavingLimit] = useState(false);
-  const [isSavingBudget, setIsSavingBudget] = useState(false);
+  const [logs, setLogs] = useState<AiLogRow[]>([]);
+  const [totalCost, setTotalCost] = useState(0);
+  const [totalTokens, setTotalTokens] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setLimitInput(globalDailyLimit);
-  }, [globalDailyLimit]);
-
-  useEffect(() => {
-    setBudgetInput(kpis.monthlyBudgetUsd);
-  }, [kpis.monthlyBudgetUsd]);
-
-  const budgetRatio =
-    kpis.monthlyBudgetUsd > 0 ? (kpis.monthlyCostUsd / kpis.monthlyBudgetUsd) * 100 : 0;
-  const isBudgetWarning = budgetRatio >= 80;
-
-  const filteredLogs = aiLogs.filter((log) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      log.action.toLowerCase().includes(q) ||
-      log.model.toLowerCase().includes(q) ||
-      (log.error_code && log.error_code.toLowerCase().includes(q)) ||
-      (log.user_id && log.user_id.toLowerCase().includes(q))
-    );
-  });
-
-  const handleExportCsv = () => {
-    const csvContent = exportAiLogsCsv();
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `ai_logs_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast.success('Đã xuất file CSV lịch sử API thành công!');
-  };
-
-  const handleSaveLimit = async () => {
-    const val = Math.max(1, Math.min(100, Number(limitInput) || 5));
-    setIsSavingLimit(true);
-    const ok = await updateGlobalDailyLimit(val);
-    setIsSavingLimit(false);
-    if (ok) {
-      toast.success(`Đã cập nhật hạn mức toàn hệ thống thành ${val} truyện/ngày!`);
-    } else {
-      toast.error('Không thể cập nhật hạn mức toàn hệ thống.');
+    async function load() {
+      try {
+        const { data } = await supabase
+          .from('ai_logs')
+          .select('id, action, model, tokens_in, tokens_out, cost_usd, latency_ms, status, created_at')
+          .order('created_at', { ascending: false })
+          .limit(200);
+        const rows = (data || []) as AiLogRow[];
+        setLogs(rows);
+        setTotalCost(rows.reduce((acc, r) => acc + (Number(r.cost_usd) || 0), 0));
+        setTotalTokens(
+          rows.reduce((acc, r) => acc + (Number(r.tokens_in) || 0) + (Number(r.tokens_out) || 0), 0)
+        );
+      } catch (err) {
+        console.error('Failed to load ai_logs:', err);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  };
 
-  const handleSaveBudget = async () => {
-    const val = Math.max(1, Number(budgetInput) || 50);
-    setIsSavingBudget(true);
-    const ok = await updateMonthlyBudget(val);
-    setIsSavingBudget(false);
-    if (ok) {
-      toast.success(`Đã cập nhật ngân sách tháng thành ${formatCurrencyUSD(val)}!`);
-    } else {
-      toast.error('Không thể lưu ngân sách tháng.');
-    }
-  };
+    load();
+  }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-ink">
-            {vi.admin.costs.title}
-          </h1>
-          <p className="text-xs sm:text-sm text-ink-soft mt-1">
-            Theo dõi chi phí token Google Gemini theo thời gian thực và kiểm soát hạn mức vận hành
-          </p>
-        </div>
-
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleExportCsv}
-          leftIcon={<Download className="w-4 h-4" />}
-        >
-          {vi.admin.costs.exportCsv}
-        </Button>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-ink">
+          Chi phí & Hạn mức AI
+        </h1>
+        <p className="text-xs sm:text-sm text-ink-soft mt-1">
+          Theo dõi chi phí gọi mô hình Gemini của FoodLens theo thời gian thực từ nhật ký hệ thống (ai_logs)
+        </p>
       </div>
 
-      {/* Budget Status & Daily Limit Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Monthly Budget Card */}
-        <Card variant="white" className="p-6 border border-ink/10 space-y-4 shadow-card lg:col-span-2">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-xs font-heading font-extrabold text-ink">
-              {vi.admin.costs.monthlyBudget}
-            </span>
-            <Badge variant={isBudgetWarning ? 'warning' : 'success'} size="sm">
-              {formatCurrencyUSD(kpis.monthlyCostUsd)} / {formatCurrencyUSD(kpis.monthlyBudgetUsd)}
-            </Badge>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card variant="white" className="p-5 border border-ink/10">
+          <div className="flex items-center justify-between text-ink-soft">
+            <span className="text-xs font-heading font-bold">Tổng chi phí (200 lượt gần nhất)</span>
+            <DollarSign className="w-4 h-4 text-brand-600" />
           </div>
-
-          <div className="w-full bg-surface-2 h-3 rounded-full overflow-hidden p-0.5 border border-ink/10">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                isBudgetWarning ? 'bg-warning' : 'bg-success'
-              }`}
-              style={{ width: `${Math.min(100, Math.max(1, budgetRatio))}%` }}
-            />
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-            {isBudgetWarning ? (
-              <div className="p-2.5 bg-warning-bg border border-warning-text/20 rounded-xl text-xs text-warning-text flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>{vi.admin.costs.budgetWarning}</span>
-              </div>
-            ) : (
-              <span className="text-xs text-success-text font-heading font-bold">
-                ✓ Chi phí vận hành đang nằm trong ngưỡng ngân sách an toàn.
-              </span>
-            )}
-
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="w-28">
-                <Input
-                  type="number"
-                  min={1}
-                  step="1"
-                  value={budgetInput}
-                  onChange={(e) => setBudgetInput(Number(e.target.value))}
-                  aria-label="Ngân sách USD tháng"
-                />
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                isLoading={isSavingBudget}
-                onClick={handleSaveBudget}
-              >
-                Cập nhật ($)
-              </Button>
-            </div>
-          </div>
+          <span className="text-2xl font-heading font-extrabold text-ink block mt-2">
+            {formatCurrencyUSD(totalCost)}
+          </span>
         </Card>
 
-        {/* Global Daily Limit Control */}
-        <Card variant="white" className="p-6 border border-ink/10 space-y-3 shadow-card">
-          <span className="text-xs font-heading font-extrabold text-ink block">
-            {vi.admin.costs.globalLimitLabel}
-          </span>
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              min={1}
-              max={100}
-              value={limitInput}
-              onChange={(e) => setLimitInput(Number(e.target.value))}
-              className="font-heading font-bold text-base"
-            />
-            <Button
-              variant="primary"
-              size="md"
-              isLoading={isSavingLimit}
-              onClick={handleSaveLimit}
-              leftIcon={<Save className="w-4 h-4" />}
-            >
-              Lưu
-            </Button>
+        <Card variant="white" className="p-5 border border-ink/10">
+          <div className="flex items-center justify-between text-ink-soft">
+            <span className="text-xs font-heading font-bold">Tổng token đã dùng</span>
+            <Cpu className="w-4 h-4 text-brand-600" />
           </div>
-          <span className="text-[11px] text-ink-soft block leading-relaxed">
-            Giới hạn trần áp dụng cho toàn hệ thống (hạn mức thực tế của mỗi gia đình bằng giá trị nhỏ hơn giữa hạn mức riêng và trần hệ thống).
+          <span className="text-2xl font-heading font-extrabold text-ink block mt-2">
+            {totalTokens.toLocaleString('vi-VN')}
+          </span>
+        </Card>
+
+        <Card variant="white" className="p-5 border border-ink/10">
+          <div className="flex items-center justify-between text-ink-soft">
+            <span className="text-xs font-heading font-bold">Số lượt gọi AI</span>
+            <Timer className="w-4 h-4 text-brand-600" />
+          </div>
+          <span className="text-2xl font-heading font-extrabold text-ink block mt-2">
+            {logs.length}
           </span>
         </Card>
       </div>
 
-      {/* AI Logs Data Grid */}
-      <Card variant="white" className="p-0 border border-ink/10 overflow-hidden shadow-card">
-        <div className="p-4 bg-surface-2 border-b border-ink/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-success-text" />
-            <h2 className="font-heading font-extrabold text-sm text-ink">
-              {vi.admin.costs.logsTable} ({filteredLogs.length} bản ghi)
-            </h2>
-          </div>
+      {/* Limits Info */}
+      <Card variant="white" className="p-5 md:p-6 border border-ink/10 bg-mint/15 space-y-2">
+        <h2 className="font-heading font-extrabold text-base text-ink flex items-center gap-2">
+          <Info className="w-5 h-5 text-brand-600" /> Hạn mức FoodLens đang áp dụng
+        </h2>
+        <ul className="text-xs text-ink-soft leading-relaxed list-disc pl-5 space-y-1">
+          <li>Mỗi người dùng được phân tích tối đa <strong className="text-ink">10 lượt/ngày</strong> — hạn mức được thực thi ngay trong Edge Function analyze-food trước khi gọi AI.</li>
+          <li>Ảnh không phải món ăn (NOT_A_FOOD) bị từ chối và <strong className="text-ink">không tính vào hạn mức</strong>.</li>
+          <li>Ảnh gửi lên tối đa 5MB, định dạng JPG / PNG / WebP.</li>
+          <li>Mô hình đang dùng do biến bí mật GEMINI_MODEL quyết định (hiện tại gemini-3.5-flash-lite) — đổi model không cần sửa code.</li>
+        </ul>
+      </Card>
 
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="w-3.5 h-3.5 text-ink-faint absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Tìm theo thao tác, model, mã lỗi..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-surface border border-ink/15 text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand-600 min-h-[38px]"
-            />
-          </div>
-        </div>
-
-        <div className="overflow-x-auto max-h-[520px]">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-surface-2 border-b border-ink/10 text-ink font-heading font-extrabold sticky top-0 z-10">
-              <tr>
-                <th className="p-3.5">{vi.admin.costs.colTime}</th>
-                <th className="p-3.5">{vi.admin.costs.colAction}</th>
-                <th className="p-3.5">Model</th>
-                <th className="p-3.5 text-center">{vi.admin.costs.colTokens}</th>
-                <th className="p-3.5 text-center">{vi.admin.costs.colLatency}</th>
-                <th className="p-3.5 text-right">{vi.admin.costs.colCost}</th>
-                <th className="p-3.5 text-center">{vi.admin.costs.colStatus}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink/10">
-              {filteredLogs.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="p-10 text-center text-xs text-ink-soft font-heading font-bold">
-                    Chưa có nhật ký gọi AI nào trong hệ thống.
-                  </td>
+      {/* Recent Logs Table */}
+      <Card variant="white" className="p-5 md:p-6 border border-ink/10 space-y-4">
+        <h2 className="font-heading font-extrabold text-base text-ink">Nhật ký gọi AI gần nhất</h2>
+        {isLoading ? (
+          <p className="text-xs text-ink-soft">Đang tải nhật ký...</p>
+        ) : logs.length === 0 ? (
+          <p className="text-xs text-ink-soft">Chưa có lượt gọi AI nào được ghi lại.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-ink-faint border-b border-ink/10">
+                  <th className="py-2 pr-3 font-heading">Thời gian</th>
+                  <th className="py-2 pr-3 font-heading">Thao tác</th>
+                  <th className="py-2 pr-3 font-heading">Mô hình</th>
+                  <th className="py-2 pr-3 font-heading text-right">Token vào/ra</th>
+                  <th className="py-2 pr-3 font-heading text-right">Chi phí</th>
+                  <th className="py-2 pr-3 font-heading text-right">Độ trễ</th>
+                  <th className="py-2 font-heading">Trạng thái</th>
                 </tr>
-              ) : (
-                filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-surface-2/60 transition-colors">
-                    <td className="p-3.5 text-ink-soft whitespace-nowrap font-mono">
-                      {formatDate(log.created_at)}
+              </thead>
+              <tbody>
+                {logs.slice(0, 30).map((row) => (
+                  <tr key={row.id} className="border-b border-ink/5">
+                    <td className="py-2 pr-3 whitespace-nowrap">
+                      {new Date(row.created_at).toLocaleString('vi-VN')}
                     </td>
-                    <td className="p-3.5 font-heading font-bold text-ink">
-                      {log.action}
-                      {log.error_code && (
-                        <span className="block text-[10px] font-mono text-danger-text mt-0.5">
-                          {log.error_code}
-                        </span>
-                      )}
+                    <td className="py-2 pr-3">{ACTION_LABELS[row.action] || row.action}</td>
+                    <td className="py-2 pr-3 font-mono text-[11px]">{row.model || '—'}</td>
+                    <td className="py-2 pr-3 text-right whitespace-nowrap">
+                      {(row.tokens_in || 0).toLocaleString('vi-VN')} / {(row.tokens_out || 0).toLocaleString('vi-VN')}
                     </td>
-                    <td className="p-3.5 font-mono text-magic-600 whitespace-nowrap">
-                      {log.model}
+                    <td className="py-2 pr-3 text-right">{formatCurrencyUSD(Number(row.cost_usd) || 0)}</td>
+                    <td className="py-2 pr-3 text-right whitespace-nowrap">
+                      {row.latency_ms ? `${(row.latency_ms / 1000).toFixed(1)}s` : '—'}
                     </td>
-                    <td className="p-3.5 text-center font-mono text-ink">
-                      {log.input_tokens} / {log.output_tokens}
-                    </td>
-                    <td className="p-3.5 text-center font-mono text-ink-soft">
-                      {log.latency_ms}ms
-                    </td>
-                    <td className="p-3.5 text-right font-mono font-bold text-success-text">
-                      {formatCurrencyUSD(Number(log.estimated_cost_usd || 0))}
-                    </td>
-                    <td className="p-3.5 text-center">
-                      <Badge variant={log.status === 'success' ? 'success' : 'danger'} size="sm">
-                        {log.status}
+                    <td className="py-2">
+                      <Badge variant={row.status === 'success' ? 'success' : 'danger'} size="sm">
+                        {row.status}
                       </Badge>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );

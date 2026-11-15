@@ -3,48 +3,32 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   LayoutDashboard,
-  ClipboardCheck,
-  ShieldAlert,
-  Terminal,
   DollarSign,
   Users,
-  Sliders,
   History,
   ArrowLeft,
   LogOut,
   Menu,
   X,
   Sparkles,
-  BookOpenCheck,
   ChevronUp,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useAdminStore } from '@/store/adminStore';
 import { vi } from '@/lib/i18n/vi';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/Badge';
-import { UserGuideModal } from '@/features/onboarding/components/UserGuideModal';
-import { shouldAutoOpenUserGuide } from '@/features/onboarding/utils/userGuideStorage';
 
 export const AdminLayout: React.FC = () => {
   const { profile, logout } = useAuthStore();
-  const { kpis, fetchAdminData } = useAdminStore();
+  const { fetchAdminData } = useAdminStore();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountDropOpen, setIsAccountDropOpen] = useState(false);
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const accountDropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchAdminData();
   }, [fetchAdminData]);
-
-  // Auto-open interactive Admin User Guide upon login (unless dismissed forever)
-  useEffect(() => {
-    if (profile?.id && shouldAutoOpenUserGuide(profile.id)) {
-      setIsGuideOpen(true);
-    }
-  }, [profile?.id]);
 
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
@@ -63,17 +47,8 @@ export const AdminLayout: React.FC = () => {
 
   const navLinks = [
     { to: '/admin', end: true, label: vi.admin.tabs.overview, icon: LayoutDashboard },
-    {
-      to: '/admin/queue',
-      label: vi.admin.tabs.queue,
-      icon: ClipboardCheck,
-      badge: kpis.pendingQueueCount > 0 ? String(kpis.pendingQueueCount) : undefined,
-    },
-    { to: '/admin/rules', label: vi.admin.tabs.rules, icon: ShieldAlert },
-    { to: '/admin/prompts', label: vi.admin.tabs.prompts, icon: Terminal },
     { to: '/admin/costs', label: vi.admin.tabs.costs, icon: DollarSign },
     { to: '/admin/users', label: vi.admin.tabs.users, icon: Users },
-    { to: '/admin/settings', label: vi.admin.tabs.settings, icon: Sliders },
     { to: '/admin/audit', label: vi.admin.tabs.audit, icon: History },
   ];
 
@@ -146,11 +121,6 @@ export const AdminLayout: React.FC = () => {
                     <Icon className="w-4 h-4 shrink-0" />
                     <span>{item.label}</span>
                   </div>
-                  {item.badge && (
-                    <Badge variant="danger" size="sm">
-                      {item.badge}
-                    </Badge>
-                  )}
                 </NavLink>
               );
             })}
@@ -188,19 +158,6 @@ export const AdminLayout: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setIsAccountDropOpen(false);
-                    setIsMobileMenuOpen(false);
-                    setIsGuideOpen(true);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-heading font-bold text-ink hover:bg-surface-2 transition-colors cursor-pointer"
-                >
-                  <BookOpenCheck className="w-4 h-4 text-brand-600" />
-                  <span>Hướng dẫn sử dụng</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsAccountDropOpen(false);
                     handleLogout();
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-heading font-bold text-danger hover:bg-danger-bg transition-colors cursor-pointer border-t border-ink/10 mt-1"
@@ -228,7 +185,7 @@ export const AdminLayout: React.FC = () => {
                   {profile?.full_name || 'Quản trị viên'}
                 </span>
                 <span className="block text-[10px] text-brand-600 font-semibold truncate">
-                  Bảo vệ an toàn trẻ em
+                  Quản trị FoodLens
                 </span>
               </div>
             </div>
@@ -250,19 +207,6 @@ export const AdminLayout: React.FC = () => {
           >
             <ArrowLeft className="w-4 h-4 text-brand-600 shrink-0" />
             <span>Về ứng dụng người dùng</span>
-          </button>
-
-          {/* Hướng dẫn sử dụng placed directly ABOVE Đăng xuất */}
-          <button
-            type="button"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              setIsGuideOpen(true);
-            }}
-            className="flex items-center gap-2 text-xs font-heading font-bold text-ink-soft hover:text-ink px-3 py-2 rounded-xl hover:bg-surface transition-colors min-h-[40px] cursor-pointer"
-          >
-            <BookOpenCheck className="w-4 h-4 text-brand-600 shrink-0" />
-            <span>Hướng dẫn sử dụng</span>
           </button>
 
           <button
@@ -288,14 +232,6 @@ export const AdminLayout: React.FC = () => {
       <main className="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
         <Outlet />
       </main>
-
-      {/* Interactive Swipeable Admin User Guide Modal */}
-      <UserGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
-        role="admin"
-        userId={profile?.id}
-      />
     </div>
   );
 };

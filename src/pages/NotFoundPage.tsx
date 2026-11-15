@@ -11,14 +11,14 @@ export const NotFoundPage: React.FC = () => {
     <div className="min-h-screen bg-bg flex items-center justify-center p-6 text-center">
       <div className="max-w-md w-full bg-surface rounded-card p-8 border border-ink/10 shadow-card">
         <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-surface-2 border border-ink/10 flex items-center justify-center text-5xl">
-          🛸
+          🥗
         </div>
         <h1 className="text-3xl font-heading font-extrabold text-ink mb-2">404</h1>
         <h2 className="text-xl font-heading font-bold text-ink mb-3">
-          Trang này lạc vào xứ sở diệu kỳ rồi!
+          Trang này không có trong thực đơn!
         </h2>
         <p className="text-sm text-ink-soft mb-6 leading-relaxed">
-          Đường dẫn bạn vừa truy cập không tồn tại hoặc đã được chuyển sang một trang sách khác.
+          Đường dẫn bạn vừa truy cập không tồn tại hoặc đã được chuyển đi nơi khác. Quay lại trang chủ để tiếp tục phân tích món ăn nhé.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link to="/">
