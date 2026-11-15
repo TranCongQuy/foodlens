@@ -299,6 +299,7 @@ export const UserLayout: React.FC = () => {
                       <span>{vi.nav.settings}</span>
                     </button>
 
+                    {!location.pathname.startsWith('/foodlens') && (
                     <button
                       type="button"
                       onClick={() => {
@@ -310,6 +311,7 @@ export const UserLayout: React.FC = () => {
                       <BookOpenCheck className="w-4 h-4 text-brand-600" />
                       <span>Hướng dẫn sử dụng</span>
                     </button>
+                    )}
 
                     <button
                       type="button"
@@ -364,7 +366,7 @@ export const UserLayout: React.FC = () => {
       </nav>
       {/* Interactive Swipeable User Guide Modal */}
       <UserGuideModal
-        isOpen={isGuideOpen}
+        isOpen={isGuideOpen && !location.pathname.startsWith('/foodlens')}
         onClose={() => setIsGuideOpen(false)}
         role={profile?.role || 'user'}
         userId={profile?.id}
