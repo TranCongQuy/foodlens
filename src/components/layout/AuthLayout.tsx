@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
-import { Sparkles, ShieldCheck } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { vi } from '@/lib/i18n/vi';
 
 export const AuthLayout: React.FC = () => {
@@ -26,15 +26,6 @@ export const AuthLayout: React.FC = () => {
             </span>
           </div>
         </Link>
-
-        <Link
-          to="/trust"
-          className="inline-flex items-center gap-1.5 text-xs font-heading font-bold text-ink-soft hover:text-ink bg-surface px-3.5 py-2 rounded-full border border-ink/10 shadow-xs transition-colors min-h-[44px]"
-        >
-          <ShieldCheck className="w-4 h-4 text-success" />
-          <span className="hidden sm:inline">{vi.trust.title}</span>
-          <span className="sm:hidden">An toàn AI</span>
-        </Link>
       </header>
 
       {/* Main Auth Box */}
@@ -48,7 +39,7 @@ export const AuthLayout: React.FC = () => {
       <footer className="relative z-10 text-center text-xs text-ink-soft py-3">
         <p>{vi.brand.aiDisclaimer}</p>
         <p className="mt-1 text-[11px] text-ink-faint font-semibold">
-          Đồ án môn AI Based Programming &copy; {new Date().getFullYear()} DrawToStory
+          Đồ án môn AI Based Programming &copy; {new Date().getFullYear()} FoodLens
         </p>
       </footer>
     </div>

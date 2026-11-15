@@ -12,25 +12,26 @@ export const RouteLoader: React.FC = () => (
 );
 
 const ROUTE_TITLES: Array<{ match: (pathname: string) => boolean; title: string }> = [
-  { match: (p) => p === '/', title: 'Trang chủ Gia đình | DrawToStory' },
-  { match: (p) => p === '/login', title: 'Đăng nhập | DrawToStory' },
-  { match: (p) => p === '/register', title: 'Đăng ký tài khoản | DrawToStory' },
-  { match: (p) => p === '/forgot-password', title: 'Khôi phục mật khẩu | DrawToStory' },
-  { match: (p) => p === '/create', title: 'Sáng tác truyện từ tranh vẽ | DrawToStory' },
-  { match: (p) => p.startsWith('/story/'), title: 'Đọc truyện cổ tích | DrawToStory' },
-  { match: (p) => p.startsWith('/shared/'), title: 'Ấn bản sách tranh chia sẻ | DrawToStory' },
-  { match: (p) => p === '/library', title: 'Tủ sách gia đình | DrawToStory' },
-  { match: (p) => p === '/kid', title: 'Góc đọc an toàn của bé | DrawToStory' },
-  { match: (p) => p === '/settings', title: 'Cài đặt & Quyền riêng tư | DrawToStory' },
-  { match: (p) => p === '/trust', title: 'Cam kết Responsible AI | DrawToStory' },
-  { match: (p) => p === '/admin', title: 'Tổng quan Quản trị AI | DrawToStory' },
-  { match: (p) => p === '/admin/queue', title: 'Hàng chờ kiểm duyệt | DrawToStory' },
-  { match: (p) => p === '/admin/rules', title: 'Bộ quy tắc an toàn | DrawToStory' },
-  { match: (p) => p === '/admin/prompts', title: 'System Prompt Studio | DrawToStory' },
-  { match: (p) => p === '/admin/costs', title: 'Chi phí & Hạn mức AI | DrawToStory' },
-  { match: (p) => p === '/admin/users', title: 'Quản lý người dùng | DrawToStory' },
-  { match: (p) => p === '/admin/settings', title: 'Cài đặt kiểm duyệt | DrawToStory' },
-  { match: (p) => p === '/admin/audit', title: 'Nhật ký kiểm toán | DrawToStory' },
+  { match: (p) => p === '/', title: 'FoodLens - Chụp món ăn, biết ngay calo' },
+  { match: (p) => p === '/foodlens', title: 'Phân tích món ăn | FoodLens' },
+  { match: (p) => p === '/login', title: 'Đăng nhập | FoodLens' },
+  { match: (p) => p === '/register', title: 'Đăng ký tài khoản | FoodLens' },
+  { match: (p) => p === '/forgot-password', title: 'Khôi phục mật khẩu | FoodLens' },
+  { match: (p) => p === '/create', title: 'Sáng tác truyện từ tranh vẽ | FoodLens' },
+  { match: (p) => p.startsWith('/story/'), title: 'Đọc truyện cổ tích | FoodLens' },
+  { match: (p) => p.startsWith('/shared/'), title: 'Ấn bản sách tranh chia sẻ | FoodLens' },
+  { match: (p) => p === '/library', title: 'Tủ sách gia đình | FoodLens' },
+  { match: (p) => p === '/kid', title: 'Góc đọc an toàn của bé | FoodLens' },
+  { match: (p) => p === '/settings', title: 'Cài đặt & Quyền riêng tư | FoodLens' },
+  { match: (p) => p === '/trust', title: 'Minh bạch AI | FoodLens' },
+  { match: (p) => p === '/admin', title: 'Tổng quan Quản trị AI | FoodLens' },
+  { match: (p) => p === '/admin/queue', title: 'Hàng chờ kiểm duyệt | FoodLens' },
+  { match: (p) => p === '/admin/rules', title: 'Bộ quy tắc an toàn | FoodLens' },
+  { match: (p) => p === '/admin/prompts', title: 'System Prompt Studio | FoodLens' },
+  { match: (p) => p === '/admin/costs', title: 'Chi phí & Hạn mức AI | FoodLens' },
+  { match: (p) => p === '/admin/users', title: 'Quản lý người dùng | FoodLens' },
+  { match: (p) => p === '/admin/settings', title: 'Cài đặt kiểm duyệt | FoodLens' },
+  { match: (p) => p === '/admin/audit', title: 'Nhật ký kiểm toán | FoodLens' },
 ];
 
 export const RootDocumentMetaLayout: React.FC = () => {
@@ -38,7 +39,7 @@ export const RootDocumentMetaLayout: React.FC = () => {
 
   useEffect(() => {
     const matched = ROUTE_TITLES.find((item) => item.match(pathname));
-    const nextTitle = matched ? matched.title : 'DrawToStory - Thần kỳ hóa nét vẽ tuổi thơ';
+    const nextTitle = matched ? matched.title : 'FoodLens - Chụp món ăn, biết ngay calo';
     document.title = nextTitle;
 
     const ogTitle = document.querySelector('meta[property="og:title"]');

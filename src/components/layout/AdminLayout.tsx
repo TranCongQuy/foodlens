@@ -86,7 +86,7 @@ export const AdminLayout: React.FC = () => {
             <Sparkles className="w-4 h-4" />
           </div>
           <span className="font-heading font-extrabold text-base text-ink">
-            DrawToStory <span className="text-brand-600 text-xs font-semibold">Admin</span>
+            FoodLens <span className="text-brand-600 text-xs font-semibold">Admin</span>
           </span>
         </div>
 

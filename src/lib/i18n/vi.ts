@@ -5,10 +5,10 @@
 
 export const vi = {
   brand: {
-    name: 'DrawToStory',
-    tagline: 'Thần kỳ hóa nét vẽ tuổi thơ',
-    slogan: 'Biến tranh bé vẽ thành truyện tranh cổ tích sống động',
-    aiDisclaimer: 'Được sáng tác và thấu cảm bởi AI an toàn',
+    name: 'FoodLens',
+    tagline: 'Chụp món ăn, biết ngay calo',
+    slogan: 'Chụp hoặc tải ảnh món ăn, AI ước lượng calo và dinh dưỡng trong vài giây',
+    aiDisclaimer: 'Kết quả dinh dưỡng do AI ước lượng, chỉ mang tính tham khảo',
   },
 
   nav: {
@@ -26,17 +26,17 @@ export const vi = {
   },
 
   auth: {
-    loginTitle: 'Chào mừng cha mẹ trở lại!',
-    loginSubtitle: 'Đăng nhập để mở ra thế giới cổ tích từ tranh bé vẽ',
-    registerTitle: 'Tạo tài khoản gia đình',
-    registerSubtitle: 'Đồng hành cùng sự sáng tạo bất tận của con yêu',
+    loginTitle: 'Chào mừng bạn trở lại!',
+    loginSubtitle: 'Đăng nhập để chụp món ăn và xem ước lượng dinh dưỡng bằng AI',
+    registerTitle: 'Tạo tài khoản FoodLens',
+    registerSubtitle: 'Đăng ký để phân tích món ăn và lưu lịch sử dinh dưỡng của bạn',
     forgotPasswordTitle: 'Khôi phục mật khẩu',
     forgotPasswordSubtitle: 'Nhập email để nhận liên kết đặt lại mật khẩu',
-    emailLabel: 'Email của cha mẹ',
-    emailPlaceholder: 'cha_me@example.com',
+    emailLabel: 'Email của bạn',
+    emailPlaceholder: 'ban@example.com',
     passwordLabel: 'Mật khẩu',
     passwordPlaceholder: 'Tối thiểu 6 ký tự',
-    fullNameLabel: 'Họ và tên phụ huynh',
+    fullNameLabel: 'Họ và tên của bạn',
     fullNamePlaceholder: 'Ví dụ: Nguyễn Văn An',
     pinLabel: 'Mã PIN phụ huynh (4 chữ số)',
     pinPlaceholder: '••••',
@@ -51,7 +51,7 @@ export const vi = {
     errorNameRequired: 'Vui lòng nhập họ và tên',
     errorPinDigits: 'Mã PIN phải bao gồm đúng 4 chữ số',
     loginSuccess: 'Đăng nhập thành công! Chào mừng bạn.',
-    registerSuccess: 'Đăng ký thành công! Hãy tạo hồ sơ cho bé yêu.',
+    registerSuccess: 'Đăng ký thành công! Bắt đầu phân tích món ăn đầu tiên nhé.',
     logoutSuccess: 'Đã đăng xuất an toàn.',
   },
 
