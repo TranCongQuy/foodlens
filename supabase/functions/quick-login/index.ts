@@ -56,12 +56,12 @@ Deno.serve(async (req: Request) => {
     const body = await req.json().catch(() => null);
     const role = body?.role;
 
-    if (role !== 'parent' && role !== 'admin') {
+    if (role !== 'user' && role !== 'admin') {
       return new Response(
         JSON.stringify({
           error: {
             code: 'INVALID_ROLE',
-            message: 'Vai trò đăng nhập nhanh không hợp lệ. Chỉ chấp nhận parent hoặc admin.',
+            message: 'Vai trò đăng nhập nhanh không hợp lệ. Chỉ chấp nhận user hoặc admin.',
           },
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -84,11 +84,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const targetEmail = role === 'admin' ? 'admin@drawtostory.vn' : 'me@phuhuynh.vn';
+    const targetEmail = role === 'admin' ? 'trancongquy78+foodlensadmin@gmail.com' : 'trancongquy78+foodlenstest2@gmail.com';
     const targetPassword =
       role === 'admin'
         ? Deno.env.get('DEMO_ADMIN_PASSWORD')
-        : Deno.env.get('DEMO_PARENT_PASSWORD');
+        : Deno.env.get('DEMO_USER_PASSWORD');
 
     if (!targetPassword) {
       return new Response(
