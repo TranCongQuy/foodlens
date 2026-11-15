@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Default public Supabase project endpoint & publishable anon key (protected by strict RLS)
-const DEFAULT_SUPABASE_URL = 'https://htvslxbytqoteyimtcxg.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_0M7XpzEBfVsKECDTkRVpKA_PgCpJiGc';
+// FoodLens dung project rieng czuvyzplxuczkegcqhxb (VuongTranPXU cu, da resume 15/11/2026)
+const DEFAULT_SUPABASE_URL = 'https://czuvyzplxuczkegcqhxb.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_i7x-XqNZSbAhgxksSf5Xvw_uoEzqZkr';
 
 let rawInputUrl = import.meta.env.VITE_SUPABASE_URL || '';
 if (!rawInputUrl || rawInputUrl.includes('your-project.supabase.co') || rawInputUrl.includes('demo-drawtostory')) {
