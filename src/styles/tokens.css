@@ -1,21 +1,21 @@
-/* Hallmark & Modern Web Tokens - Single Source of Truth at :root */
+/* FoodLens Design Tokens - Single Source of Truth at :root */
 :root {
   /* Surfaces & Inks */
-  --color-bg: #FFF9F0;
+  --color-bg: #F3F7EF;
   --color-surface: #FFFFFF;
-  --color-surface-2: #FFF3E6;
-  --color-surface-3: #FCE8D5;
-  --color-ink: #2E2540;
-  --color-ink-soft: #5E5370;
-  --color-ink-faint: #8A7F99;
+  --color-surface-2: #EAF2E2;
+  --color-surface-3: #DCE9CF;
+  --color-ink: #1F2A1E;
+  --color-ink-soft: #4C5B4A;
+  --color-ink-faint: #7C8B78;
 
   /* Brand Palette */
-  --color-brand: #D13A5E;
-  --color-brand-hover: #B92F51;
-  --color-brand-light: #FFE3EA;
-  --color-primary: #D13A5E;
-  --color-magic: #6C5CE7;
-  --color-magic-hover: #5B4BD6;
+  --color-brand: #1E7A46;
+  --color-brand-hover: #175C35;
+  --color-brand-light: #DFF2E3;
+  --color-primary: #1E7A46;
+  --color-magic: #B45309;
+  --color-magic-hover: #92400E;
 
   /* Semantic Status (WCAG 2.1 AA Compliant) */
   --color-success: #166E48;
@@ -27,19 +27,19 @@
   --color-info: #1F5FA8;
   --color-info-bg: #CDE7FF;
 
-  /* Storybook Pastels */
-  --color-mint: #C9F0DD;
+  /* Fresh Pastels */
+  --color-mint: #CDEBCB;
   --color-sky: #CDE7FF;
-  --color-lavender: #E3D9FF;
+  --color-lavender: #E6EFD2;
   --color-butter: #FFF1B8;
-  --color-peach: #FFD6BA;
+  --color-peach: #FFDFC4;
 
   /* Radii */
-  --radius-card: 28px;
-  --radius-input: 16px;
+  --radius-card: 20px;
+  --radius-input: 14px;
   --radius-pill: 9999px;
 
   /* Shadows */
-  --shadow-card: 0 1px 2px rgba(46, 37, 64, 0.06), 0 12px 32px -12px rgba(46, 37, 64, 0.14);
-  --shadow-pop: 0 24px 48px -16px rgba(46, 37, 64, 0.28);
+  --shadow-card: 0 1px 2px rgba(31, 42, 30, 0.06), 0 12px 32px -12px rgba(31, 42, 30, 0.14);
+  --shadow-pop: 0 24px 48px -16px rgba(31, 42, 30, 0.28);
 }

@@ -11,52 +11,52 @@
   }
 
   body {
-    background-color: var(--color-bg, #FFF9F0);
+    background-color: var(--color-bg, #F3F7EF);
     overflow-x: clip;
     /* Subtle paper noise texture (≤ 4% opacity) */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    color: #2E2540;
-    font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+    color: #1F2A1E;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
     font-weight: 700;
     letter-spacing: -0.015em;
   }
 
   /* Accessible keyboard focus ring (>= 3:1 contrast against cream surface) */
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-    outline: 2px solid #9B2142;
+    outline: 2px solid #175C35;
     outline-offset: 2px;
   }
 }
 
 /* Native Top-Layer Modal Dialog & Scroll Chaining Containment */
-dialog.dts-modal {
+dialog.fl-modal {
   padding: 0;
-  border: 1px solid rgba(46, 37, 64, 0.1);
+  border: 1px solid rgba(31, 42, 30, 0.1);
   background-color: #FFFFFF;
-  color: #2E2540;
+  color: #1F2A1E;
   max-height: 90dvh;
   overscroll-behavior: contain;
 }
 
-dialog.dts-modal[open] {
+dialog.fl-modal[open] {
   display: flex;
   flex-direction: column;
 }
 
-dialog.dts-modal:modal {
+dialog.fl-modal:modal {
   overscroll-behavior: contain;
 }
 
-dialog.dts-modal::backdrop {
+dialog.fl-modal::backdrop {
   overflow: hidden;
   overscroll-behavior: contain;
-  background-color: rgba(46, 37, 64, 0.45);
+  background-color: rgba(31, 42, 30, 0.45);
   backdrop-filter: blur(4px);
 }
 
@@ -88,7 +88,7 @@ dialog.dts-modal::backdrop {
 
 /* Story reading text font */
 .font-story {
-  font-family: 'Baloo 2', 'Quicksand', system-ui, sans-serif;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
 }
 
 /* Custom Soft Scrollbars */
@@ -98,28 +98,28 @@ dialog.dts-modal::backdrop {
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFF9F0;
+  background: #F3F7EF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(46, 37, 64, 0.18);
+  background: rgba(31, 42, 30, 0.18);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(209, 58, 94, 0.45);
+  background: rgba(30, 122, 70, 0.45);
 }
 
 /* Polaroid & Paper Frames */
 .polaroid-frame {
   background-color: #FFFFFF;
-  box-shadow: 0 1px 2px rgba(46, 37, 64, 0.06), 0 12px 32px -12px rgba(46, 37, 64, 0.16);
-  border: 1px solid rgba(46, 37, 64, 0.08);
+  box-shadow: 0 1px 2px rgba(31, 42, 30, 0.06), 0 12px 32px -12px rgba(31, 42, 30, 0.16);
+  border: 1px solid rgba(31, 42, 30, 0.08);
 }
 
 .tape-decal {
   background-color: rgba(255, 241, 184, 0.85);
-  box-shadow: 0 1px 3px rgba(46, 37, 64, 0.1);
+  box-shadow: 0 1px 3px rgba(31, 42, 30, 0.1);
   backdrop-filter: blur(2px);
 }
 

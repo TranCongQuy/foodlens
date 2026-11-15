@@ -115,7 +115,7 @@ export const Modal: React.FC<ModalProps> = ({
       aria-describedby={description ? descId : undefined}
       aria-label={!title ? 'Hộp thoại' : undefined}
       className={cn(
-        'dts-modal w-[calc(100%-1.5rem)] sm:w-full mx-auto my-auto rounded-[28px] shadow-pop overflow-hidden',
+        'fl-modal w-[calc(100%-1.5rem)] sm:w-full mx-auto my-auto rounded-[20px] shadow-pop overflow-hidden',
         'max-sm:mb-0 max-sm:w-full max-sm:max-w-none max-sm:rounded-b-none max-sm:rounded-t-[28px]',
         maxWidthClasses[maxWidth]
       )}
