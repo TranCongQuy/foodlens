@@ -158,3 +158,78 @@ export const Layer3JsonSchema = {
   },
   required: ['risk_score', 'faithfulness_score', 'violation_reasons', 'recommended_action', 'pedagogical_feedback'],
 };
+
+// ==========================================
+// FOODLENS: PHÂN TÍCH MÓN ĂN (analyze-food)
+// ==========================================
+export const FoodItemSchema = z.object({
+  name: z.string().min(1),
+  amount: z.string(),
+  calories: z.number().min(0),
+});
+
+export type FoodItem = z.infer<typeof FoodItemSchema>;
+
+// Schema lỏng: AI luôn phải trả is_food; các trường còn lại chỉ bắt buộc khi is_food = true
+export const FoodAnalysisLooseSchema = z.object({
+  is_food: z.boolean(),
+  dish_name: z.string().optional(),
+  confidence: z.number().min(0).max(1).optional(),
+  portion_desc: z.string().optional(),
+  calories: z.number().min(0).optional(),
+  protein_g: z.number().min(0).optional(),
+  fat_g: z.number().min(0).optional(),
+  carbs_g: z.number().min(0).optional(),
+  health_score: z.number().int().min(1).max(10).optional(),
+  items: z.array(FoodItemSchema).optional(),
+  tips: z.string().optional(),
+});
+
+export type FoodAnalysisLoose = z.infer<typeof FoodAnalysisLooseSchema>;
+
+// Schema chặt: áp dụng khi is_food = true (mọi con số hiển thị đều phải có mặt)
+export const FoodAnalysisSchema = z.object({
+  is_food: z.literal(true),
+  dish_name: z.string().min(1),
+  confidence: z.number().min(0).max(1),
+  portion_desc: z.string(),
+  calories: z.number().int().min(0),
+  protein_g: z.number().min(0),
+  fat_g: z.number().min(0),
+  carbs_g: z.number().min(0),
+  health_score: z.number().int().min(1).max(10),
+  items: z.array(FoodItemSchema).min(1),
+  tips: z.string(),
+});
+
+export type FoodAnalysis = z.infer<typeof FoodAnalysisSchema>;
+
+export const FoodAnalysisJsonSchema = {
+  type: 'OBJECT',
+  properties: {
+    is_food: { type: 'BOOLEAN', description: 'True nếu ảnh có món ăn hoặc thức uống, False nếu không' },
+    dish_name: { type: 'STRING', description: 'Tên món ăn bằng tiếng Việt phổ biến (ví dụ: Phở bò tái nạm)' },
+    confidence: { type: 'NUMBER', description: 'Độ tin cậy nhận diện món từ 0.0 đến 1.0' },
+    portion_desc: { type: 'STRING', description: 'Mô tả khẩu phần nhìn thấy trong ảnh (ví dụ: 1 tô vừa ~500ml)' },
+    calories: { type: 'INTEGER', description: 'Tổng kcal ước lượng theo khẩu phần trong ảnh' },
+    protein_g: { type: 'NUMBER', description: 'Gam đạm (protein) ước lượng' },
+    fat_g: { type: 'NUMBER', description: 'Gam béo (fat) ước lượng' },
+    carbs_g: { type: 'NUMBER', description: 'Gam tinh bột (carbs) ước lượng' },
+    health_score: { type: 'INTEGER', description: 'Điểm lành mạnh từ 1 (kém) đến 10 (rất lành mạnh)' },
+    items: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          name: { type: 'STRING', description: 'Tên thành phần (ví dụ: Bánh phở)' },
+          amount: { type: 'STRING', description: 'Lượng ước lượng (ví dụ: ~200g)' },
+          calories: { type: 'NUMBER', description: 'Kcal của thành phần này' },
+        },
+        required: ['name', 'amount', 'calories'],
+      },
+      description: 'Danh sách 2-6 thành phần chính của món',
+    },
+    tips: { type: 'STRING', description: 'Tối đa 2 câu gợi ý ăn lành mạnh hơn, tiếng Việt' },
+  },
+  required: ['is_food'],
+};
