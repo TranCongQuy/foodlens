@@ -29,8 +29,7 @@ drop table if exists public.drawings cascade;
 drop table if exists public.children cascade;
 drop table if exists public.profiles cascade;
 
--- Clean up any previous drawing files so storage starts 100% clean
-delete from storage.objects where bucket_id = 'drawings';
+-- (Bo dong delete storage.objects: Supabase chan xoa truc tiep tren bang storage, va project moi chua co bucket 'drawings')
 
 -- 3. PROFILES TABLE
 create table public.profiles (
