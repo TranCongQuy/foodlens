@@ -106,10 +106,10 @@ export const UserLayout: React.FC = () => {
             </div>
             <div>
               <span className="font-heading font-extrabold text-lg text-ink tracking-tight block leading-none">
-                DrawToStory
+                FoodLens
               </span>
               <span className="text-[10px] font-bold text-brand-600 block mt-0.5">
-                Nhà xuất bản diệu kỳ
+                Chụp món ăn, biết ngay calo
               </span>
             </div>
           </NavLink>
